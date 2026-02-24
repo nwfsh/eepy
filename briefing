@@ -12,10 +12,10 @@ HOMESCREEN
 // this is incharge of the main page functionality
 // this is where we do our switching between the eepy default, eepy morning, and eepy night
 // also incharge of settings 
-// TIME bar at the top
+// TIME bar at the top - OWNS COMPONENTS TIMEDISPLAY
 // notifications at the bottom of the screen
 // mascot base appearance
-// track of streaks
+// track of streaks - OWNS COMPONENT STREAK 
 
 EEPYDEFAULT
 // default features for eepy
@@ -31,18 +31,4 @@ EEPYNIGHT
 // meaning this cares abt what happens as soon as u press into the mascot, functions and looks for that\
 
 
-might change it for instead 
-src/
-  home/
-    HomeScreen.tsx
-    modes/
-      morning/
-        MorningHome.tsx
-        MorningFlow.tsx
-        MessageViewer.tsx
-      night/
-        NightHome.tsx
-        NightFlow.tsx
-        UploadFlow.tsx
-      day/
-        DayHome.tsx
+Yep — now is a perfect time for black-box testing, because your whole app is basically “given time + settings → mode + allowed actions + next screen.”
