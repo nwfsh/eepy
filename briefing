@@ -31,4 +31,19 @@ EEPYNIGHT
 // meaning this cares abt what happens as soon as u press into the mascot, functions and looks for that\
 
 
-Yep — now is a perfect time for black-box testing, because your whole app is basically “given time + settings → mode + allowed actions + next screen.”
+
+TESTING
+
+Start with Jest + React Native Testing Library, and only test:
+mode switching UI
+gating (buttons enabled/disabled)
+mascot tap navigation decision
+deriveMode / window logic (pure function)
+Skip Detox until you’ve got:
+real upload/view flows
+navigation structure stabilized
+
+HOMEWORK FOR UNDERSTNAIDN HOW TO TEST FUNCTION
+
+https://youtu.be/PlppJvJ67GA?si=egyqbEG00u3sUJ80
+https://www.youtube.com/watch?v=JBSUgDxICg8
