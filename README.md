@@ -45,6 +45,11 @@ Unlocking & Waking up period
 As a user, I want to unlock my partner’s drop when I wake up within my wake window so waking up on time feels rewarding.
 As a user, I want to be unable to unlock the drop outside my wake window unless I use a special token, so the wake goal has meaning.
 
+Settings
+As a user, I want to be able to change my partner anytime so that If i break up with them I can redo this with someone new. // streak logic fix
+As a user, i want to be able to change my wake and sleep window anytime so that if i Have a change of schedule, I can adjust that.
+As a user, I want these wake and sleep window changes only apply for the conseqeutive day as I dont to give myself a way to bypass the system. 
+
 Motivation & Streaks
 As a user, I want to earn points for waking up within my window so I can build consistent habits.
 As a user, I want to earn tokens that allow me to unlock drops outside my wake window so the system remains flexible and forgiving.
