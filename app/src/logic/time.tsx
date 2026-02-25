@@ -24,8 +24,8 @@ export function isWithinTimeWindow(now: Date, window: TimeWindow): boolean {
 }
 
 export function getMode(now: Date, morning: TimeWindow, night: TimeWindow): Mode {
-    if(isWithinTimeWindow(now, morning)) { return "morning"; }
-    if(isWithinTimeWindow(now, night)) { return "night"; }
+    if (isWithinTimeWindow(now, morning)) return "morning";
+    if (isWithinTimeWindow(now, night)) return "night";
     return "default";
 }
 
