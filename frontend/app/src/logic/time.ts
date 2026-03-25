@@ -1,7 +1,6 @@
 // PAGE IS FOR generic time math (minutes, windows, streak rules)
 
 
-
 // FUNCTIONS FOR MODE 
 // diff mode we having
 

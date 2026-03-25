@@ -11,7 +11,8 @@ export type UserProfile = {
 export type Couple = {
     me: UserProfile;
     partner: UserProfile;
-    partnerid: string;
+    partnerId: string;
+    partneremail: string;
     streak: CoupleStreak
   };
 
