@@ -17,9 +17,9 @@ CREATE TABLE sleepSchedule (
     timezone TEXT NOT NULL,
     wake_time INTEGER NOT NULL,
     sleep_time INTEGER NOT NULL,
-    window INTEGER NOT NULL,
+    time_window INTEGER NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (user_id,effective_date) {/* this is a weak entity, hence it composes of effective date and user_id to create primary key */}
+    PRIMARY KEY (user_id,effective_date) 
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
