@@ -1,5 +1,9 @@
+// PAGE IS FOR generic time math (minutes, windows, streak rules)
 
+
+// FUNCTIONS FOR MODE 
 // diff mode we having
+
 export type Mode = "morning" | "night" | "default";
 export type TimeOfDay = number; // storing minutes cus its timezone safe
 // one day have 1440 minutes, 23:59 is 1439
@@ -29,3 +33,16 @@ export function getMode(now: Date, morning: TimeWindow, night: TimeWindow): Mode
     return "default";
 }
 
+// FUNCTIONS FOR STREAK
+
+// import the couple to find their logic of streak
+// each user has their own streak, but couple streak only goes up when both goes up
+// Pick the streak rule (I recommend the one above)
+// Implement:
+// getDateKeyInTimeZone
+// getNowMinInTimeZone
+// isWithinWindowInTimeZone
+// Store:
+// meDailyCheckins[dateKey]
+// partnerDailyCheckins[dateKey]
+// Implement maybeAdvanceCoupleStreak
