@@ -1,5 +1,3 @@
-CREATE TYPE relationship_status AS ENUM ('pending','active', 'ended');
-
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT UNIQUE NOT NULL,
@@ -29,10 +27,12 @@ CREATE TABLE relationship (
     code UUID NOT NULL UNIQUE DEFAULT gen_random_uuid(),
     user1_id UUID NOT NULL,
     user2_id UUID,
-    status relationship_status NOT NULL DEFAULT 'pending',
     streak_counter INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOT NULL NOW(),
+
     FOREIGN KEY (user1_id) REFERENCES users(id) ON DELETE CASCADE
     FOREIGN KEY (user2_id) REFERENCES users(id) ON DELETE CASCADE
+
     CHECK (user1_id <> user2_id OR user2_id IS NULL)    /* ensure user1 and user2 are not the same */
 );
 
