@@ -1,3 +1,6 @@
+CREATE type day_phase AS ENUM ('morning', 'night');
+CREATE type media_type AS ENUM ('image', 'video', 'audio', 'text');
+
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT UNIQUE NOT NULL,
@@ -42,4 +45,47 @@ ON relationship (
     GREATEST(user1_id::text, user2_id::text)
 )
 WHERE user2_id IS NOT NULL;
+
+CREATE TABLE checkin (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(), /* I made each checkin just have an id, is that easier?? */
+    relationship_id UUID NOT NULL,
+    user_id UUID NOT NULL,
+    type day_phase NOT NULL,
+    cycle_date DATE NOT NULL,
+    has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
+    checked_in_at TIMESTAMPTZ,
+
+    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+
+    UNIQUE (relationship_id, user_id, type, cycle_date)
+);
+
+CREATE TABLE message (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    relationship_id UUID NOT NULL,
+    from_id UUID NOT NULL,
+    to_id UUID NOT NULL,
+    type day_phase NOT NULL,
+    sent_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    special_request_text TEXT,
+    unlocked BOOLEAN NOT NULL DEFAULT FALSE,
+    spent_coins INTEGER NOT NULL DEFAULT 0,
+
+    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE
+    FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE
+    
+    CHECK (from_id <> to_id)
+)
+
+CREATE TABLE message_media (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    message_id UUID NOT NULL,
+    type media_type NOT NULL,
+    url TEXT NOT NULL,
+
+    FOREIGN KEY (message_id) REFERENCES message(id) ON DELETE CASCADE
+)
+
 
