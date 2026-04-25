@@ -16,6 +16,8 @@ export const register = async (
     INSERT INTO users(email,password,first_name,last_name,preferred_name,pronouns,timezone)
     VALUES(${email}, ${hashed},${first_name}, ${last_name}, ${preferred_name}, ${pronouns}, ${timezone})
     RETURNING id, email, first_name, last_name, preferred_name, pronouns, timezone`
+
+    return user;
     // notice we dont return password on purpose 
 }
 
