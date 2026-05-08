@@ -1,3 +1,5 @@
+// to connect to our database 
+
 import postgres from "postgres";
 import "dotenv/config";
 

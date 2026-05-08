@@ -1,6 +1,6 @@
+// to set up express 
 import express from "express";
 import cors from "cors";
-import authRoutes from "./routes/auth.routes";
 
 
 
@@ -13,10 +13,6 @@ app.use(cors());
 
 // let express read JSON from request bodies
 app.use(express.json());
-
-//  attach all your auth routes under /auth
-// so /auth/register, /auth/signin, /auth/refresh, /auth/signout
-app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
