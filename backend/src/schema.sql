@@ -124,3 +124,102 @@ CREATE TABLE message_media (
 
     FOREIGN KEY (message_id) REFERENCES message(id) ON DELETE CASCADE
 );
+
+-- row level securities
+-- usually in databases, when u access a table, u can read every row, but u dont want a user that can access one row
+-- to access other rows and read other people's data
+
+alter table users enable row level security;
+alter table sleep_schedule enable row level security;
+alter table relationship enable row level security;
+alter table checkin enable row level security;
+alter table message enable row level security;
+alter table message_media enable row level security;
+
+-- policies 
+-- every query get filtered by policy , no policies -> no access to table at all 
+-- for select -> gives u perms to select the columns
+-- for update -> gives u perms to update the column 
+
+
+-- user policies
+create policy "users can read own profile"
+    on users for select using (auth.uid() = id);
+
+create policy "users can update their own profile"
+    on users for select using (auth.uid() = id);
+
+create policy "users can read partner profile"
+    on users for select using (
+        id in (
+            select case
+            when user1_id = auth.uid() then user2_id
+            when user2_id = auth.uid() then user1_id
+            end 
+            from relationship
+            where user1_id = auth.uid() or user2_id = auth.uid()
+        )
+    );
+
+-- sleep policies
+create policy "users can manage their own sleep schedule"
+    on sleep_schedule for all using (auth.uid() = id);
+
+-- relationship policies 
+create policy "users can read their relationship"
+    on relationship for select using (
+        auth.uid() = user1_id or auth.uid() = user2_id
+    );
+
+create policy "users can create relationship"
+    on relationship for insert with check (auth.uid() = user1_id
+    );
+
+create policy "users can update their relationship"
+    on relationships for update (
+        auth.uid() = user1_id or auth.uid() = user2_id
+    );
+
+-- check in policies 
+
+create policy "users can manage their own checkins"
+    on checkins for all using (auth.uid() = id);
+
+create policy "users can read their partner check ins"
+    on checkins for select using (relationship_id in
+        ( select id from relationship 
+        where user1_id = auth.uid() or user2_id = auth.uid()
+        )
+    );
+
+-- messages policies 
+
+create policy "users can send messages"
+    on messages for insert with check ( auth.uid() = from_id);
+
+create policy "users can read messages they sent"
+    on messages for select using ( 
+        auth.uid = from_id OR auth.uid() = to_id
+    );
+
+create policy "only recipients can unlock their messages"
+    on messages for select using (
+        auth.uid() = to_id
+    )
+
+-- message media policies 
+
+create policy "users can read the media linked to their messages"
+    on messages for select using (
+        message_id in (
+            select id from messages
+            where from_id = auth.uid() OR to_id = auth.uid()
+        )
+    ); 
+
+create policy "users can insert media for their messages"
+    on message_media for insert with check (
+ message_id IN (
+            SELECT id FROM message WHERE from_id = auth.uid()
+        )
+    );
