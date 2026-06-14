@@ -19,9 +19,9 @@ CREATE TABLE sleepSchedule (
     timezone TEXT NOT NULL,
     wake_time INTEGER NOT NULL,
     sleep_time INTEGER NOT NULL,
-    window INTEGER NOT NULL,
+    theWindow INTEGER NOT NULL,
     updated_at TIMESTAMPTZ DEFAULT NOW(),
-    PRIMARY KEY (user_id,effective_date)    /* this is a weak entity, hence it composes of effective date and user_id to create primary key */
+    PRIMARY KEY (user_id,effective_date),    /* this is a weak entity, hence it composes of effective date and user_id to create primary key */
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
@@ -31,10 +31,10 @@ CREATE TABLE relationship (
     user1_id UUID NOT NULL,
     user2_id UUID,
     streak_counter INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMPTZ DEFAULT NOT NULL NOW(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
 
-    FOREIGN KEY (user1_id) REFERENCES users(id) ON DELETE CASCADE
-    FOREIGN KEY (user2_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user1_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (user2_id) REFERENCES users(id) ON DELETE CASCADE,
 
     CHECK (user1_id <> user2_id OR user2_id IS NULL)    /* ensure user1 and user2 are not the same */
 );
@@ -55,8 +55,8 @@ CREATE TABLE checkin (
     has_checked_in BOOLEAN NOT NULL DEFAULT FALSE,
     checked_in_at TIMESTAMPTZ,
 
-    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 
     UNIQUE (relationship_id, user_id, type, cycle_date)
 );
@@ -72,12 +72,12 @@ CREATE TABLE message (
     unlocked BOOLEAN NOT NULL DEFAULT FALSE,
     spent_coins INTEGER NOT NULL DEFAULT 0,
 
-    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE
-    FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE
-    FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (relationship_id) REFERENCES relationship(id) ON DELETE CASCADE,
+    FOREIGN KEY (from_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (to_id) REFERENCES users(id) ON DELETE CASCADE,
     
     CHECK (from_id <> to_id)
-)
+);
 
 CREATE TABLE message_media (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -86,6 +86,4 @@ CREATE TABLE message_media (
     url TEXT NOT NULL,
 
     FOREIGN KEY (message_id) REFERENCES message(id) ON DELETE CASCADE
-)
-
-
+);
