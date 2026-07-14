@@ -1,3 +1,9 @@
+-- EEPY — Database Schema
+
+
+CREATE TYPE day_phase  AS ENUM ('morning', 'night');
+CREATE TYPE media_type AS ENUM ('image', 'video', 'audio', 'text');
+
 CREATE TABLE users (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     email TEXT UNIQUE NOT NULL,
