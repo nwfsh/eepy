@@ -82,7 +82,7 @@ WHERE user2_id IS NOT NULL;
 
 
 
-CREATE TABLE checkin (
+CREATE TABLE checkins  (
     id               UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     relationship_id  UUID        NOT NULL,
     user_id          UUID        NOT NULL,
@@ -97,7 +97,7 @@ CREATE TABLE checkin (
 );
 
 
-CREATE TABLE message (
+CREATE TABLE messages (
     id                   UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
     relationship_id      UUID        NOT NULL,
     from_id              UUID        NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE message_media (
     media_type       media_type  NOT NULL,          
     url         TEXT        NOT NULL,
 
-    FOREIGN KEY (message_id) REFERENCES message(id) ON DELETE CASCADE
+    FOREIGN KEY (message_id) REFERENCES messages(id) ON DELETE CASCADE
 );
 
 -- row level securities
@@ -132,8 +132,8 @@ CREATE TABLE message_media (
 alter table users enable row level security;
 alter table sleep_schedule enable row level security;
 alter table relationship enable row level security;
-alter table checkin enable row level security;
-alter table message enable row level security;
+alter table checkins enable row level security;
+alter table messages enable row level security;
 alter table message_media enable row level security;
 
 -- policies 
@@ -163,7 +163,7 @@ create policy "users can read partner profile"
 
 -- sleep policies
 create policy "users can manage their own sleep schedule"
-    on sleep_schedule for all using (auth.uid() = id);
+    on sleep_schedule for all using (auth.uid() = user_id);
 
 -- relationship policies 
 create policy "users can read their relationship"
@@ -176,7 +176,7 @@ create policy "users can create relationship"
     );
 
 create policy "users can update their relationship"
-    on relationships for update (
+    on relationship for update using (
         auth.uid() = user1_id or auth.uid() = user2_id
     );
 
@@ -199,15 +199,15 @@ create policy "users can send messages"
 
 create policy "users can read messages they sent"
     on messages for select using ( 
-        auth.uid = from_id OR auth.uid() = to_id
+        auth.uid() = from_id OR auth.uid() = to_id
     );
 
 create policy "only recipients can unlock their messages"
     on messages for select using (
         auth.uid() = to_id
-    )
+    );
 
--- message media policies 
+-- messages media policies 
 
 create policy "users can read the media linked to their messages"
     on messages for select using (
@@ -220,6 +220,6 @@ create policy "users can read the media linked to their messages"
 create policy "users can insert media for their messages"
     on message_media for insert with check (
  message_id IN (
-            SELECT id FROM message WHERE from_id = auth.uid()
+            SELECT id FROM messages WHERE from_id = auth.uid()
         )
     );
