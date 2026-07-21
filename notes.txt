@@ -1,4 +1,5 @@
 ## why does backend and frontend have their own respective packages and tsconfig?
+
 its a monorepo, one github repo with multiple projects inside of it (backend and frontend)
 realise they both dont need the packages each other needs, and also they both compile differently,
 so if you put it all in the same pacakages and tsconfig, it will break 
@@ -17,3 +18,10 @@ they both still share packages though
 THEY BOTH NEED : supabase/supabase.js, backend using the service key, frontend using the anon key 
 
 
+## what does supabase auth do?
+
+it handles the signup, sign in, supabase will given token immediately, token gets sent to your backend with every request
+backend will never see a password
+
+## what is a compound response? 
+one route giving back multiple pieces of information 
