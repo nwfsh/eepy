@@ -5,13 +5,15 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import { requireAuth } from "./middleware/auth";
-
+import userRouter from "./routes/user";
+import scheduleRouter from "./routes/schedule"
 
 const app = express();
 
 // let your frontend talk to your backend 
 // cors means cross-origin resource sharing 
 // by default browsers and apps block requests between different origins, but this allows it 
+
 app.use(cors());
 
 // let express read JSON from request bodies
@@ -26,6 +28,10 @@ app.get("/health", (req, res) => {
 app.get("/protected", requireAuth, (req, res) => {
     res.json({ message : "you are logged in", user: (req as any).user});
 });
+
+// where you put all your routes for all other stuff 
+app.use("/user", userRouter);
+app.use("/schedule", scheduleRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

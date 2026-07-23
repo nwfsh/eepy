@@ -13,6 +13,7 @@ CREATE TABLE users (
     pronouns        TEXT        NOT NULL,
     timezone        TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    tokens INTEGER NOT NULL DEFAULT 0,
 );
 
 -- function that autofill ur users table you have for urself , when supabase registers a new person to ur app

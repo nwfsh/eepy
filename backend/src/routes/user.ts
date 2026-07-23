@@ -1,17 +1,15 @@
 import { Router, Request, Response } from "express";
-import { requireAuth } from "../src/middleware/auth";
-import sql from "../src/db";
+import { requireAuth } from "../middleware/auth";
+import sql from "../db";
 
 // routes i need for user
 
-const router = Router();
-
-
+const userRouter = Router();
 
 // no need INSERT user as supabase does it for you when user sign up, but they dont fill in extra details, need PATCH
 // route to PATCH a user -> need UUID, email, preferred_name, pronouns (possibly enum), timezone, created_at( might not need to include)
 
-router.patch("/me", requireAuth, async ( req: Request, res:Response) => {
+userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
     try {
 
         const userId = (req as any).user.id;
@@ -44,7 +42,7 @@ router.patch("/me", requireAuth, async ( req: Request, res:Response) => {
 
 
 // route to GET their preferred_name, timezone, email (used twice)
-router.get("/me", requireAuth, async (req: Request, res: Response) => {
+userRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
         // this is to represents an array of 
@@ -67,9 +65,7 @@ router.get("/me", requireAuth, async (req: Request, res: Response) => {
 });
 
 
-
-
-export default router;
+export default userRouter;
 
 
 
