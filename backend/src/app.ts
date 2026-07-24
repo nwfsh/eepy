@@ -8,6 +8,8 @@ import { requireAuth } from "./middleware/auth";
 import userRouter from "./routes/user";
 import scheduleRouter from "./routes/schedule"
 import relationshipRouter from "./routes/relationship"
+import messageRouter from "./routes/message"
+import checkinRouter from "./routes/checkin"
 
 const app = express();
 
@@ -34,6 +36,8 @@ app.get("/protected", requireAuth, (req, res) => {
 app.use("/user", userRouter);
 app.use("/schedule", scheduleRouter);
 app.use("/relationship",relationshipRouter);
+app.use("/message",messageRouter);
+app.use("/checkin",checkinRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

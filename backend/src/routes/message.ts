@@ -62,10 +62,17 @@ messageRouter.post("/", requireAuth, async (req: Request, res: Response) => {
 messageRouter.get("/incoming", requireAuth, async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
-        const { phase } = req.query as day_phase;
+        const phase = String(req.query.phase);
+        // to make sure phase is a string
 
         if (!phase) {
             res.status(400).json({ error: "Phase is required" });
+            return;
+        }
+
+        // make sure phase fits the day_phase enums 
+        if (phase !== "morning" && phase !== "night") {
+            res.status(400).json({ error: "Phase must be morning or night" });
             return;
         }
 
@@ -103,17 +110,3 @@ messageRouter.get("/incoming", requireAuth, async (req: Request, res: Response) 
 export default messageRouter;
 
 
-// req will decide and give you information whether its morning or night base on timezone, 
-// from calculaing from user databse table 
-
-// viewing my morning/night message (no need to update the unlocked or coins rn, thats checkin's job)
-
-
-
-
-// GET -> the message 
-// WHERE -> to_id = user_id, PHASE = morning/night, 
-// return SLICE 1, desc order from sent_at
-
-// sending partner morning/night  message + possibly sending a special request with it too ->
-// POST -> put timestamp, set to_id base on relationship_id.user2 or user1, special request if exist, ulocked to 0, phase given by req by user backend
