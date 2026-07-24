@@ -22,8 +22,8 @@ export const requireAuth = async (
 
 
     // pull the actual token out， remove the "Bearer " starting 
-    const token = authHeader.split("")[1];
-
+    const token = authHeader.split(" ")[1]; 
+    
     const { data, error} = await supabase.auth.getUser(token)
 
     if (error || !data.user) {

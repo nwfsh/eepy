@@ -22,3 +22,6 @@ dist/
 
 skills-lock.json
 .agents/
+
+# test files
+test.http 
