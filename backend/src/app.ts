@@ -7,6 +7,7 @@ import cors from "cors";
 import { requireAuth } from "./middleware/auth";
 import userRouter from "./routes/user";
 import scheduleRouter from "./routes/schedule"
+import relationshipRouter from "./routes/relationship"
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get("/protected", requireAuth, (req, res) => {
 // where you put all your routes for all other stuff 
 app.use("/user", userRouter);
 app.use("/schedule", scheduleRouter);
+app.use("/relationship",relationshipRouter);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

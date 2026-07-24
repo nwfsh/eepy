@@ -52,7 +52,8 @@ scheduleRouter.get("/current", requireAuth, async( req: Request , res: Response)
             LIMIT 1
         `;
         if(!schedule) {
-            return res.status(404).json({error: "no schedule found"})
+            res.status(404).json({error: "no schedule found"})
+            return;
         }
         return schedule;
     } catch(error) {
