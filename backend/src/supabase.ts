@@ -11,5 +11,5 @@ if (!supabaseUrl || !supabaseServiceKey) {
 }
 
 // takes your supabase URL and service key and gives you back a client object
-// a client object is just a controller 
+// a client object is just a controller, it uses serviceKey from supabase 
 export const supabase = createClient(supabaseUrl, supabaseServiceKey);
