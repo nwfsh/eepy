@@ -7,8 +7,6 @@ CREATE TYPE media_type AS ENUM ('image', 'video', 'audio', 'text');
 CREATE TABLE users (
     id              UUID        PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE, 
     email           TEXT        UNIQUE NOT NULL,    
-    first_name      TEXT        NOT NULL,
-    last_name       TEXT        NOT NULL,
     preferred_name  TEXT        NOT NULL,
     pronouns        TEXT        NOT NULL,
     timezone        TEXT        NOT NULL,
