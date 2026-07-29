@@ -16,7 +16,7 @@ HOW IT COMPILES : typescript -> into react native javascript, and it will run a 
 
 they both still share packages though
 THEY BOTH NEED : supabase/supabase.js, backend using the service key, frontend using the anon key 
-
+    
 
 ## what does supabase auth do?
 
