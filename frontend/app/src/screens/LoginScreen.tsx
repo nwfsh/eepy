@@ -1,13 +1,12 @@
 import { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert,} from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert,} from "react-native";
 import { supabase} from "../lib/supabase"
 import { onBoardingStyles } from "../styles/onboarding";
-import OnboardingSun from "../assets/onboardingsun.svg";
-import OnboardingMoon from "../assets/onboardingmoon.svg"
 import { Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 
-export default function LoginScreen () {
+export default function LoginScreen ({navigation} : any) {
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ loading, setLoading ] = useState(false);
@@ -27,7 +26,10 @@ export default function LoginScreen () {
     };
 
     return (
-        < View style = {onBoardingStyles.container}>
+<View
+    // colors={["#FFF8E7", "#E6E2FF"]}
+    style={onBoardingStyles.container}
+>
         <View style={{ position: 'absolute', top: 190, left: 0 }}>
         <Image source={require("../assets/onboardingsun.png")} style={{ width: 200, height: 150 }} />
         </View>
@@ -60,14 +62,16 @@ export default function LoginScreen () {
         
         <Text style = {onBoardingStyles.linkText }> 
             No account?{" "}
-            <Text style = {onBoardingStyles.linkBold}>Sign Up</Text>
+            <Text style = {onBoardingStyles.linkBold}
+            onPress={() => navigation.navigate("SignUp")}
+            >Sign Up</Text>
         </Text>
 
         <View style={{ position: 'absolute', top: 655, right: 0}}>
         <Image source={require("../assets/onboardingmoon.png")} style={{ width: 200, height: 80}} />
         </View>
         
-        </View>
+</View>
 
         // you can style no account and sign up in different colour if you nest them like that
         // write {" "} to put space between both texts 
