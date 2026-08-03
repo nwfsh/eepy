@@ -32,3 +32,8 @@ ts means pure typescript and tsx is typescript with jsx ( html like elements )
 ## why do need a remote control aka createClient() for backend and frontend?
 backend -> use service role key, bypasses the RLS, uses verify tokens and does admin opererations, doesnt touch phone 
 frontend -> uses anon key, respects RLS, handles login/logout/session on the user's phone.
+
+## package managers !!
+they manage your project dependecies -> doing things like installing, updating, and removing packages. 
+they basically install packages and run scripts 
+eg : npm, yarn (created by facebook), pnpm (newest and most efficient with disk space)
