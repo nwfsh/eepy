@@ -37,3 +37,8 @@ frontend -> uses anon key, respects RLS, handles login/logout/session on the use
 they manage your project dependecies -> doing things like installing, updating, and removing packages. 
 they basically install packages and run scripts 
 eg : npm, yarn (created by facebook), pnpm (newest and most efficient with disk space)
+
+## added render as remote server instead of running backend on laptop, why? 
+this is called deployment 
+makes the backend reachable from everywhere in the world, wifi, cellular 
+url will never change, and laptop wouldnt need to be on for it to work

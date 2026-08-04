@@ -38,12 +38,12 @@ export default function LoginScreen ({navigation} : any) {
 
         <Text style = {onBoardingStyles.inputTitle}> Email </Text>
         <TextInput style = { onBoardingStyles.inputField}
-        value = {email} 
-        onChangeText={setEmail}
-        // tells your keyboard to add @ into the keyboard makes it easier 
-        keyboardType="email-address"
-        autoCapitalize="none"
-        placeholder="your@gmail.com"
+            value = {email} 
+            onChangeText={setEmail}
+            // tells your keyboard to add @ into the keyboard makes it easier 
+            keyboardType="email-address"
+            autoCapitalize="none"
+            placeholder="your@gmail.com"
         />
 
         <Text style = {onBoardingStyles.inputTitle} > Password </Text>

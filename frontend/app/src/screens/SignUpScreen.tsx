@@ -22,10 +22,12 @@ export default function SignUp({navigation}: any) {
             email, password});
 
         if (error) {
-            Alert.alert("Error",error.message)
+            Alert.alert("Error",error.message);
+            setLoading(false);
+            return;
         }
 
-        setLoading(false);
+        navigation.navigate("CompleteProfile")
     };
 
     return (
@@ -66,7 +68,9 @@ export default function SignUp({navigation}: any) {
 
         
         <TouchableOpacity style = {onBoardingStyles.finalButton} onPress={handleSignUp} disabled={loading}>
-            <Text style = { onBoardingStyles.buttonText}> {loading ? "Signing Up..." : "Sign Up" }</Text>
+            <Text style = { onBoardingStyles.buttonText}>
+            
+                 {loading ? "Signing Up..." : "Sign Up" }</Text>
         </TouchableOpacity>
         
 
