@@ -77,7 +77,7 @@ export default function SignUp({navigation}: any) {
         <Text style = {onBoardingStyles.linkText }> 
         Already have an account?{" "}
             <Text style = {onBoardingStyles.linkBold}
-            onPress={ () => navigation.navigate("LogIn")}
+            onPress={ () => navigation.navigate("SignIn")}
             >Sign In</Text>
         </Text>
 

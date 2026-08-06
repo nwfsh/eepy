@@ -4,9 +4,11 @@ import { supabase} from "../lib/supabase"
 import { onBoardingStyles } from "../styles/onboarding";
 import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { ImageBackground } from 'expo-image';
+import { Pressable, StyleSheet } from 'react-native';
 
 
-export default function LoginScreen ({navigation} : any) {
+export default function SignInScreen ({navigation} : any) {
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ loading, setLoading ] = useState(false);
@@ -30,6 +32,11 @@ export default function LoginScreen ({navigation} : any) {
     // colors={["#FFF8E7", "#E6E2FF"]}
     style={onBoardingStyles.container}
 >
+
+        <View style ={{ position: 'absolute', top: 0, left: 180}}> 
+            <Image source={require("../assets/myotherblotch.png")} />
+        </View>
+
         <View style={{ position: 'absolute', top: 190, left: 0 }}>
         <Image source={require("../assets/onboardingsun.png")} style={{ width: 200, height: 150 }} />
         </View>
@@ -55,9 +62,22 @@ export default function LoginScreen ({navigation} : any) {
         placeholder = "password"
         />
 
-        <TouchableOpacity style = {onBoardingStyles.finalButton} onPress={handleSignIn} disabled={loading}>
-            <Text style = { onBoardingStyles.buttonText}> {loading ? "Signing In..." : "Sign in" }</Text>
-        </TouchableOpacity>
+   <TouchableOpacity
+  style={onBoardingStyles.finalButton}
+  onPress={handleSignIn}
+  disabled={loading}
+  hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+>
+  <ImageBackground
+    source={require('../assets/onboardingButtonFinal.png')}
+    style={onBoardingStyles.finalButtonImage}
+    contentFit="fill"
+  >
+    <Text style={onBoardingStyles.buttonText}>
+      {loading ? "Signing In..." : "Sign In"}
+    </Text>
+  </ImageBackground>
+</TouchableOpacity>
 
         
         <Text style = {onBoardingStyles.linkText }> 
@@ -67,8 +87,12 @@ export default function LoginScreen ({navigation} : any) {
             >Sign Up</Text>
         </Text>
 
-        <View style={{ position: 'absolute', top: 655, right: 0}}>
+        <View style={{ position: 'absolute', top: 670, right: 0}}>
         <Image source={require("../assets/onboardingmoon.png")} style={{ width: 200, height: 80}} />
+        </View>
+
+        <View style ={{ position: 'absolute', bottom: 0, right: 130}}> 
+            <Image source={require("../assets/myblotch.png")} />
         </View>
         
 </View>
