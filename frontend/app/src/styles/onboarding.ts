@@ -83,4 +83,20 @@ finalButtonImage: {
         color: colors.textMuted,
         fontFamily: "Inter_700Bold",
     },
+
+    passwordWrapper: {
+    position: 'relative',
+    justifyContent: 'center',
+},
+passwordInput: {
+    paddingRight: 44,
+},
+eyeIcon: {
+    position: 'absolute',
+    right: 12,
+    height: '100%',
+    justifyContent: 'center',
+},
+
+    
 });

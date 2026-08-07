@@ -2,22 +2,18 @@ import { useState } from "react";
 import { View, Text, TextInput, TouchableOpacity, Alert,} from "react-native";
 import { supabase} from "../lib/supabase"
 import { onBoardingStyles } from "../styles/onboarding";
-import { Image } from "expo-image";
+import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Pressable } from "react-native";
+import { ImageBackground } from "expo-image";
 
 export default function SignUp({navigation}: any) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleSignUp =  async () => {
         setLoading(true);
-        if (password !==  confirmPassword) {
-            Alert.alert("Error","Password does not match");
-            setLoading(false);
-            return;
-        }
         const { error } = await supabase.auth.signUp({
             email, password});
 
@@ -32,9 +28,14 @@ export default function SignUp({navigation}: any) {
 
     return (
         <View style = {onBoardingStyles.container}> 
-        <View style={{ position: 'absolute', top: 160, left: 0 }}>
-        <Image source={require("../assets/onboardingsun.png")} style={{ width: 200, height: 150 }} />
-        </View>
+         <View style ={{ position: 'absolute', top: 0, left: 170}}> 
+             <Image source={require("../assets/myotherblotch.png")} />
+         </View>
+ 
+         <View style={{ position: 'absolute', top: 190, left: 0 }}>
+         <Image source={require("../assets/onboardingsun.png")} style={{ width: 200, height: 150 }} />
+         </View>
+
         <Text style = { onBoardingStyles.title }> Sign Up</Text>
         <Text style = { onBoardingStyles.subtitle}> Stay Connected With Eepy </Text>
 
@@ -57,20 +58,19 @@ export default function SignUp({navigation}: any) {
         placeholder = "password"
         />
 
-        <Text style = {onBoardingStyles.inputTitle} > Confirm Password </Text>
-        <TextInput style = { onBoardingStyles.inputField}
-        value = {confirmPassword}
-        onChangeText = {setConfirmPassword}
-        // hide whats you type
-        secureTextEntry 
-        placeholder = "confirm password"
-        />
-
-        
+    
         <TouchableOpacity style = {onBoardingStyles.finalButton} onPress={handleSignUp} disabled={loading}>
+
+              <ImageBackground
+    source={require('../assets/onboardingButtonFinal.png')}
+    style={onBoardingStyles.finalButtonImage}
+    contentFit="fill"
+  >
             <Text style = { onBoardingStyles.buttonText}>
             
                  {loading ? "Signing Up..." : "Sign Up" }</Text>
+
+                 </ImageBackground>
         </TouchableOpacity>
         
 
@@ -81,9 +81,16 @@ export default function SignUp({navigation}: any) {
             >Sign In</Text>
         </Text>
 
-        <View style={{ position: 'absolute', top: 700, right: 0}}>
+
+        <View style={{ position: 'absolute', top: 670, right: 0}}>
         <Image source={require("../assets/onboardingmoon.png")} style={{ width: 200, height: 80}} />
         </View>
+
+        <View style ={{ position: 'absolute', bottom: 0, right: 130}}> 
+            <Image source={require("../assets/myblotch.png")} />
+        </View>
+
+        
 
         </View>
 

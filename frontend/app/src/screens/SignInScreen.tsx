@@ -6,12 +6,14 @@ import { Image } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { ImageBackground } from 'expo-image';
 import { Pressable, StyleSheet } from 'react-native';
+import { Ionicons} from "@expo/vector-icons"
 
 
 export default function SignInScreen ({navigation} : any) {
     const [ email, setEmail ] = useState("");
     const [ password, setPassword ] = useState("");
     const [ loading, setLoading ] = useState(false);
+    const [ showPassword, setShowPassword ] = useState(false);
 
     const handleSignIn = async () => {
         setLoading(true);
@@ -33,7 +35,7 @@ export default function SignInScreen ({navigation} : any) {
     style={onBoardingStyles.container}
 >
 
-        <View style ={{ position: 'absolute', top: 0, left: 180}}> 
+        <View style ={{ position: 'absolute', top: 0, left: 170}}> 
             <Image source={require("../assets/myotherblotch.png")} />
         </View>
 
@@ -54,13 +56,24 @@ export default function SignInScreen ({navigation} : any) {
         />
 
         <Text style = {onBoardingStyles.inputTitle} > Password </Text>
-        <TextInput style = { onBoardingStyles.inputField}
+        <View  style={onBoardingStyles.passwordWrapper}>
+        <TextInput style = { [onBoardingStyles.inputField, onBoardingStyles.passwordInput]}
         value = {password}
         onChangeText = {setPassword}
         // hide whats you type
-        secureTextEntry 
+        secureTextEntry = {!showPassword}
         placeholder = "password"
         />
+
+        <Pressable
+        onPress={() => setShowPassword((prev) => !prev)}
+        style={onBoardingStyles.eyeIcon}
+        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}>
+
+             <Ionicons name={showPassword ? "eye-off" : "eye"} size={20} color="#D7D7D9" />
+            
+        </Pressable>
+        </View>
 
    <TouchableOpacity
   style={onBoardingStyles.finalButton}
@@ -78,7 +91,6 @@ export default function SignInScreen ({navigation} : any) {
     </Text>
   </ImageBackground>
 </TouchableOpacity>
-
         
         <Text style = {onBoardingStyles.linkText }> 
             No account?{" "}
