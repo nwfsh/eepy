@@ -36,11 +36,11 @@ export default function SignInScreen ({navigation} : any) {
 >
 
         <View style ={{ position: 'absolute', top: 0, left: 170}}> 
-            <Image source={require("../assets/myotherblotch.png")} />
+            <Image source={require("../assets/tinified/myotherblotch.png")} />
         </View>
 
         <View style={{ position: 'absolute', top: 190, left: 0 }}>
-        <Image source={require("../assets/onboardingsun.png")} style={{ width: 200, height: 150 }} />
+        <Image source={require("../assets/tinified/onboardingsun.png")} style={{ width: 200, height: 150 }} />
         </View>
         <Text style = { onBoardingStyles.title }> Sign In</Text>
         <Text style = { onBoardingStyles.subtitle}> Stay Connected With Eepy </Text>
@@ -82,7 +82,7 @@ export default function SignInScreen ({navigation} : any) {
   hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
 >
   <ImageBackground
-    source={require('../assets/onboardingButtonFinal.png')}
+    source={require('../assets/tinified/onboardingButtonFinal.png')}
     style={onBoardingStyles.finalButtonImage}
     contentFit="fill"
   >
@@ -100,11 +100,11 @@ export default function SignInScreen ({navigation} : any) {
         </Text>
 
         <View style={{ position: 'absolute', top: 670, right: 0}}>
-        <Image source={require("../assets/onboardingmoon.png")} style={{ width: 200, height: 80}} />
+        <Image source={require("../assets/tinified/onboardingmoon.png")} style={{ width: 200, height: 80}} />
         </View>
 
         <View style ={{ position: 'absolute', bottom: 0, right: 130}}> 
-            <Image source={require("../assets/myblotch.png")} />
+            <Image source={require("../assets/tinified/myblotch.png")} />
         </View>
         
 </View>

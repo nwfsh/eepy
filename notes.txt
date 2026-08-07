@@ -42,3 +42,21 @@ eg : npm, yarn (created by facebook), pnpm (newest and most efficient with disk 
 this is called deployment 
 makes the backend reachable from everywhere in the world, wifi, cellular 
 url will never change, and laptop wouldnt need to be on for it to work
+
+## how avery made everything load faster YAY for images
+frontend stuff ig -> first did svg for best quality, 
+but lost texture and whatever in figma, hence I did png x1x2x3 for different devices, 
+followed by realising diff between expo images and native expo images,
+ then I tried tinier and also learned loading speed between the tunnels and same lan, 
+ and then finally asset to preload
+
+ interview telling what i did:
+ Chose PNG over SVG for blurred/gradient assets (SVG doesn't preserve Figma blur effects) — matched format to content, not just "best practice" default
+Exported @1x/@2x/@3x for device density support
+Standardized on expo-image over RN's built-in Image for consistent behavior + built-in caching
+Compressed all assets via TinyPNG (lossless for this content type, meaningful file size reduction)
+Root-caused perceived slowness to --tunnel dev mode, not asset size — switching to --lan cut load time to near-instant
+Added asset preloading + splash screen hold to eliminate pop-in on screen load
+
+
+##
