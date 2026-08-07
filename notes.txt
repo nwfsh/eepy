@@ -59,4 +59,8 @@ Root-caused perceived slowness to --tunnel dev mode, not asset size — switchin
 Added asset preloading + splash screen hold to eliminate pop-in on screen load
 
 
-##
+## what is use state from react?
+its a variable that when changed, will rerender
+
+## imports for ONLY react-native, they are its UI
+View, Text,  TouchableOpacity ( tappable wrapper ), Alert ( native OS popup dialog), Pressable, StyleSheet, Image
