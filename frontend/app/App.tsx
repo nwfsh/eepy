@@ -1,8 +1,8 @@
 // entry point to the app
 import "react-native-gesture-handler";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import { AuthProvider } from "./src/context/AuthContext";
+import { RootTagContext, StyleSheet, Text, View } from "react-native";
+import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import SignInScreen from "./src/screens/SignInScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import CreateProfileScreen from './src/screens/CreateProfileScreen'
@@ -20,6 +20,31 @@ import { useEffect, useState } from "react";
 import SleepScheduleScreen from "./src/screens/SleepScheduleScreen";
 
 const Stack = createStackNavigator();
+
+function RootNavigator() {
+    const { session, loading } = useAuth();
+    if (loading) return null;
+
+    return (
+        <NavigationContainer>
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+                {session ? (
+                    <>
+                        <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
+                        <Stack.Screen name="SleepSchedule" component={SleepScheduleScreen} />
+                        {/* later: RelationshipCode, Home, etc. */}
+                    </>
+                ) : (
+                    <>
+                        <Stack.Screen name="SignIn" component={SignInScreen} options={{ animation: "fade" }} />
+                        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ animation: "fade" }} />
+                    </>
+                )}
+            </Stack.Navigator>
+        </NavigationContainer>
+    );
+}
+
 
 export default function App() {
   const [assetsToPreload] = [
@@ -41,6 +66,8 @@ export default function App() {
 
   const [assetsLoaded, setAssetsLoaded] = useState(false);
 
+  
+
   useEffect(() => {
     Asset.loadAsync(assetsToPreload).then(() => setAssetsLoaded(true));
   }, []);
@@ -51,29 +78,7 @@ export default function App() {
   // rmb to run a cron job at hte creation of a new relationship 
   return (
       <AuthProvider>
-          <NavigationContainer>
-              <Stack.Navigator screenOptions={{ headerShown: false }}>
-                  <Stack.Screen
-                      name="SignIn"
-                      component={SignInScreen}
-                      options={{ animation: "fade" }}
-                  />
-                  <Stack.Screen
-                      name="SignUp"
-                      component={SignUpScreen}
-                      options={{ animation: "fade" }}
-                  />
-                  <Stack.Screen
-                      name="CreateProfile"
-                      component={CreateProfileScreen}
-                      options={{ animation: "default" }}
-                  />
-                  <Stack.Screen
-                    name="SleepSchedule"
-                    component={SleepScheduleScreen}
-                    options={{ animation: "default" }}/>
-              </Stack.Navigator>
-          </NavigationContainer>
+        <RootNavigator/>
       </AuthProvider>
   );
 }
