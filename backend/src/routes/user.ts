@@ -13,6 +13,7 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
     try {
 
         const userId = (req as any).user.id;
+        console.log("PATCH USER ID:", userId);
         const { preferred_name, pronouns, timezone } = req.body;
         
         
