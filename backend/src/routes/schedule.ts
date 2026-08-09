@@ -11,23 +11,24 @@ const scheduleRouter = Router();
 // why not PUT? cus u wanted to keep the time stamp, aka the history of it 
 scheduleRouter.post("/", requireAuth, async (req: Request, res: Response) => {
     try {
+        console.log("BACKEND RECEIVED BODY:", req.body);
         const userId = (req as any).user.id;
-        const { wake_time, sleep_time, theWindow, timezone } = req.body;
+        const { wake_time, sleep_time, thewindow} = req.body;
 
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
         const effective_date = tomorrow.toISOString().split('T')[0]; // gives "2026-07-22"
 
-        if (!wake_time || !sleep_time || !theWindow || !timezone) {
+        if (!wake_time || !sleep_time || !thewindow) {
             res.status(400).json({ error: "missing fields" });
             return;
         }
 
         // need to return actual column name
         const [schedule] = await sql`
-            INSERT INTO sleep_schedule (user_id, effective_date, timezone, wake_time, sleep_time, theWindow)
-            VALUES (${userId}, ${effective_date}, ${timezone}, ${wake_time}, ${sleep_time}, ${theWindow})
-            RETURNING user_id, effective_date, timezone, wake_time, sleep_time, theWindow
+            INSERT INTO sleep_schedule (user_id, effective_date, wake_time, sleep_time, thewindow)
+            VALUES (${userId}, ${effective_date}, ${wake_time}, ${sleep_time}, ${thewindow})
+            RETURNING user_id, effective_date, wake_time, sleep_time, thewindow
         `;
 
         res.status(201).json({schedule});
@@ -45,7 +46,7 @@ scheduleRouter.get("/current", requireAuth, async( req: Request , res: Response)
         const userId = (req as any).user.id;
 
         const[schedule] = await sql`
-            SELECT user_id, effective_date, timezone, wake_time, sleep_time, theWindow
+            SELECT user_id, effective_date, wake_time, sleep_time, thewindow
             FROM sleep_schedule
             WHERE user_id = ${userId} AND effective_date <= CURRENT_DATE
             ORDER BY effective_date DESC

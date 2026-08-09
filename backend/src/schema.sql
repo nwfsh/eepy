@@ -45,10 +45,9 @@ create trigger on_auth_user_created
 CREATE TABLE sleep_schedule (                    
     user_id         UUID        NOT NULL,
     effective_date  DATE        NOT NULL,
-    timezone        TEXT        NOT NULL,
     wake_time       INTEGER     NOT NULL,
     sleep_time      INTEGER     NOT NULL,
-    theWindow       INTEGER     NOT NULL, -- rmb in minutes   
+    thewindow       INTEGER     NOT NULL, -- rmb in minutes   
     updated_at      TIMESTAMPTZ DEFAULT NOW(),
 
     PRIMARY KEY (user_id, effective_date),

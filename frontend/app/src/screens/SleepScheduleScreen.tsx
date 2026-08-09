@@ -52,6 +52,11 @@ export default function SleepScheduleScreen({ navigation }: any) {
             setLoading(false);
             return;
         }
+        console.log("SENDING:", {
+            wake_time,
+            sleep_time,
+            thewindow: Number(window),
+        });
 
         // raw difference
         const rawDiff = Math.abs(wake_time - sleep_time);
@@ -81,10 +86,10 @@ export default function SleepScheduleScreen({ navigation }: any) {
         // this is the full url
 
         const response = await fetch(
-            `${process.env.EXPO_PUBLIC_API_URL}/user/me`,
+            `${process.env.EXPO_PUBLIC_API_URL}/schedule`,
             {
                 // tell them what method ur using in the backend
-                method: "PATCH",
+                method: "POST",
                 // to allow them to even be processed
                 headers: {
                     "Content-Type": "application/json",
@@ -100,12 +105,14 @@ export default function SleepScheduleScreen({ navigation }: any) {
         );
 
         if (!response.ok) {
+            const errorText = await response.text();
             Alert.alert("Error", "Failed to save sleep schedule");
+             console.log("SAVE FAILED:", response.status, errorText);
             setLoading(false);
             return;
         }
 
-        navigation.navigate("relationshipCode");
+        navigation.navigate("RelationshipCode");
         setLoading(false);
     };;
 

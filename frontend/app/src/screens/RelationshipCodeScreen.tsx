@@ -17,8 +17,6 @@ export default function RelationshipCodeScreen({ navigation }: any) {
 
     useEffect(() => {
 
-        
-
     }, []);
 
     const handleCompleteProfile = async () => {
@@ -89,6 +87,11 @@ export default function RelationshipCodeScreen({ navigation }: any) {
             <Text style={onBoardingStyles.subtitle}>
                 Pair with your partner..
             </Text>
+
+            <View style = {onBoardingStyles.box}>
+
+
+            </View>
 
             <View style={{ position: "absolute", bottom: 0, right: 130 }}>
                 <Image source={require("../assets/tinified/myblotch.png")} />

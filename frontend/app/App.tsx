@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import SignInScreen from "./src/screens/SignInScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import CreateProfileScreen from './src/screens/CreateProfileScreen'
+import RelationshipCodeScreen from './src/screens/RelationshipCodeScreen'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import {
@@ -30,14 +31,32 @@ function RootNavigator() {
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {session ? (
                     <>
-                        <Stack.Screen name="CreateProfile" component={CreateProfileScreen} />
-                        <Stack.Screen name="SleepSchedule" component={SleepScheduleScreen} />
+                        <Stack.Screen
+                            name="CreateProfile"
+                            component={CreateProfileScreen}
+                        />
+                        <Stack.Screen
+                            name="SleepSchedule"
+                            component={SleepScheduleScreen}
+                        />
+                        <Stack.Screen
+                            name="RelationshipCode"
+                            component={RelationshipCodeScreen}
+                        />
                         {/* later: RelationshipCode, Home, etc. */}
                     </>
                 ) : (
                     <>
-                        <Stack.Screen name="SignIn" component={SignInScreen} options={{ animation: "fade" }} />
-                        <Stack.Screen name="SignUp" component={SignUpScreen} options={{ animation: "fade" }} />
+                        <Stack.Screen
+                            name="SignIn"
+                            component={SignInScreen}
+                            options={{ animation: "fade" }}
+                        />
+                        <Stack.Screen
+                            name="SignUp"
+                            component={SignUpScreen}
+                            options={{ animation: "fade" }}
+                        />
                     </>
                 )}
             </Stack.Navigator>

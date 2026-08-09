@@ -103,5 +103,15 @@ export const onBoardingStyles = StyleSheet.create({
         justifyContent: "center",
     },
 
-
+    box: {
+        backgroundColor: colors.input,
+        borderRadius: 12,
+        borderWidth: 1,      
+        padding: 20,            
+        borderColor: colors.inputBorder,
+        elevation: 2,
+    },
 });
+
+
+
