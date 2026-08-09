@@ -20,6 +20,7 @@ export const requireAuth = async (
         return;
     }
 
+    console.log("AUTH HEADER:", req.headers.authorization);
 
     // pull the actual token out， remove the "Bearer " starting 
     const token = authHeader.split(" ")[1]; 

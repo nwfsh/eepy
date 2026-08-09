@@ -102,6 +102,10 @@ const filteredZones = allZones.filter((z) =>
         // so u cant use relative URL to connect them
         // this is the full url
 
+        console.log("API URL:", process.env.EXPO_PUBLIC_API_URL);
+        console.log("FULL URL:", `${process.env.EXPO_PUBLIC_API_URL}/user/me`);
+        console.log("SESSION:", session ? "exists" : "MISSING");
+
         const response = await fetch(
             `${process.env.EXPO_PUBLIC_API_URL}/user/me`,
             {

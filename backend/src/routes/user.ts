@@ -15,6 +15,7 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
         const userId = (req as any).user.id;
         const { preferred_name, pronouns, timezone } = req.body;
         
+        
         // making sure at least one field is sent
 
         if(!preferred_name && !pronouns && !timezone) {
@@ -32,7 +33,13 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
         WHERE id = ${userId}
         RETURNING id, email, preferred_name, pronouns, timezone`;
 
+        if (!user) {
+            res.status(404).json({ error: "user not found" });
+            return;
+        }
+
         res.status(200).json({user})
+        
         
     } catch (error) {
         res.status(500).json({error: "internal server error"})
@@ -59,6 +66,7 @@ userRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
 
         res.status(200).json({user})
     } catch ( error ) {
+        console.error("PATCH /user/me FAILED:", error);
         res.status(500).json({error: "internal server error"})
         return;
 
