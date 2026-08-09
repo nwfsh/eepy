@@ -32,8 +32,8 @@ export default function SleepScheduleScreen({ navigation }: any) {
             return;
         }
 
-        if (Number(window) > 90) {
-            Alert.alert("Error", "Keep window within 1.5 hours");
+        if (Number(window) > 180) {
+            Alert.alert("Error", "Please keep window within 1.5 hours");
             setLoading(false);
             return;
         }
@@ -42,6 +42,33 @@ export default function SleepScheduleScreen({ navigation }: any) {
 
         const wake_time = currentTimeToMins(wakeTime);
         const sleep_time = currentTimeToMins(sleepTime);
+        const win = Number(window);
+
+        if (wake_time == sleep_time) {
+            Alert.alert(
+                "Error",
+                "wakeTime and sleepTime shouldn't be the same"
+            );
+            setLoading(false);
+            return;
+        }
+
+        // raw difference
+        const rawDiff = Math.abs(wake_time - sleep_time);
+        // the clock is circular (1440 min), so the real gap is the shorter of
+        // going forward or wrapping around
+        const circularGap = Math.min(rawDiff, 1440 - rawDiff);
+
+        // the two grace windows collide if the gap between the centers
+        // is less than the combined width of both half-windows
+        if (circularGap <= win * 2) {
+            Alert.alert(
+                "Error",
+                "Your wake and sleep windows are too close together, they will overlap. Space them further apart or shorten your window."
+            );
+            setLoading(false);
+            return;
+        }
 
         const {
             data: { session },
@@ -67,7 +94,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
                 body: JSON.stringify({
                     wake_time,
                     sleep_time,
-                    thewindow : Number(window)
+                    thewindow: Number(window),
                 }),
             }
         );
@@ -80,7 +107,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
 
         navigation.navigate("relationshipCode");
         setLoading(false);
-    };
+    };;
 
     return (
         <View
@@ -108,7 +135,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
             <View
                 style={{
                     flexDirection: "row",
-                    justifyContent: "left",
+                    justifyContent: "flex-start",
                     gap: 60,
                     marginBottom: 24,
                 }}
