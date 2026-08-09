@@ -45,6 +45,7 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
 userRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
+        console.log("PATCH userId:", userId);
         // this is to represents an array of 
         const [user] = await sql` 
         SELECT id, email, preferred_name, pronouns, timezone, created_at
