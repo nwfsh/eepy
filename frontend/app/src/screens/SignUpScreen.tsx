@@ -24,8 +24,6 @@ export default function SignUp({ navigation }: any) {
             setLoading(false);
             return;
         }
-
-        navigation.navigate("CreateProfile");
     };
 
     return (

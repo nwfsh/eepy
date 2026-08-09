@@ -24,6 +24,7 @@ const Stack = createStackNavigator();
 
 function RootNavigator() {
     const { session, loading } = useAuth();
+    const { signOut } = useAuth();
     if (loading) return null;
 
     return (

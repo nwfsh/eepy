@@ -82,6 +82,7 @@ const filteredZones = allZones.filter((z) =>
 
     const handleCompleteProfile = async () => {
         setLoading(true);
+        
 
         if (!preferredName || !pronouns || !timezone) {
             Alert.alert("Error", "Please fill in all fields");
@@ -120,11 +121,15 @@ const filteredZones = allZones.filter((z) =>
             }
         );
 
-        if (!response.ok) {
-            Alert.alert("Error", "Failed to save full profile");
-            setLoading(false);
-            return;
-        }
+if (!response.ok) {
+    const errorText = await response.text();
+    console.log("PROFILE SAVE FAILED:", response.status, errorText);
+    Alert.alert("Error", "Failed to update profile");
+    setLoading(false);
+    return;
+}
+const result = await response.json();
+console.log("PROFILE SAVE OK:", result);
 
         navigation.navigate("SleepSchedule");
         setLoading(false);
@@ -146,7 +151,7 @@ const filteredZones = allZones.filter((z) =>
                     source={require("../assets/tinified/whiteblobother.png")}
                 />
             </View>
-
+            
             <Text style={onBoardingStyles.title}> Create Profile</Text>
             <Text style={onBoardingStyles.subtitle}>
                 {" "}
