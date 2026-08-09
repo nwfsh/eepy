@@ -1,9 +1,6 @@
 // PAGE IS FOR generic time math (minutes, windows, streak rules)
 
 
-// FUNCTIONS FOR MODE 
-// diff mode we having
-
 export type Mode = "morning" | "night" | "default";
 export type TimeOfDay = number; // storing minutes cus its timezone safe
 // one day have 1440 minutes, 23:59 is 1439

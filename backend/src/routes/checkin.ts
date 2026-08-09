@@ -33,7 +33,7 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
 
         // 2. get current time in user's timezone as minutes since midnight
         const now = new Date();
-        const userTime = DateTime.now().setZone(schedule.timezone);
+        const userTime = DateTime.now().setZone(schedule.timezone); // THIS IS THE SINGLE SOURCE OF TRUTH, ALWAYS USE THIS TIME 
         const currentMinutes = userTime.hour * 60 + userTime.minute;
 
         // 3. check if within window
@@ -68,7 +68,7 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         }
 
         // 5. check if already checked in today
-        const today = new Date().toISOString().split("T")[0];
+        const today = userTime.toISODate();// dont use new Date as it takes YOUR DATE 
         const [existingCheckin] = await sql`
             SELECT id FROM checkin
             WHERE user_id = ${userId}

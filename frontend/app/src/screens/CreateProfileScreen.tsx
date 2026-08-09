@@ -72,7 +72,7 @@ export default function CreateProfileScreen({ navigation }: any) {
             return;
         }
 
-        navigation.navigate("RelationshipCode");
+        navigation.navigate("SleepSchedule");
         setLoading(false);
     };
 

@@ -17,6 +17,7 @@ import {
 } from "@expo-google-fonts/inter";
 import { Asset } from "expo-asset";
 import { useEffect, useState } from "react";
+import SleepScheduleScreen from "./src/screens/SleepScheduleScreen";
 
 const Stack = createStackNavigator();
 
@@ -47,6 +48,7 @@ export default function App() {
   if (!fontsLoaded) return null;
   if (!assetsLoaded) return null;
 
+  // rmb to run a cron job at hte creation of a new relationship 
   return (
       <AuthProvider>
           <NavigationContainer>
@@ -54,18 +56,22 @@ export default function App() {
                   <Stack.Screen
                       name="SignIn"
                       component={SignInScreen}
-                      options={{ animation: "none" }}
+                      options={{ animation: "fade" }}
                   />
                   <Stack.Screen
                       name="SignUp"
                       component={SignUpScreen}
-                      options={{ animation: "none" }}
+                      options={{ animation: "fade" }}
                   />
                   <Stack.Screen
                       name="CreateProfile"
                       component={CreateProfileScreen}
-                      options={{ animation: "none" }}
+                      options={{ animation: "default" }}
                   />
+                  <Stack.Screen
+                    name="SleepSchedule"
+                    component={SleepScheduleScreen}
+                    options={{ animation: "default" }}/>
               </Stack.Navigator>
           </NavigationContainer>
       </AuthProvider>

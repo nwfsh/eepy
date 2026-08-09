@@ -35,6 +35,13 @@ export const onBoardingStyles = StyleSheet.create({
         fontFamily: "Inter_400Regular",
     },
 
+    subtitleno2: {
+        fontSize: 14,
+        color: colors.textMuted,
+        textAlign: "left",
+        fontFamily: "Inter_400Regular",
+    },
+
     inputTitle: {
         width: "100%",
         fontSize: 14,

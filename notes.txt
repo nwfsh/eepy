@@ -64,3 +64,6 @@ its a variable that when changed, will rerender
 
 ## imports for ONLY react-native, they are its UI
 View, Text,  TouchableOpacity ( tappable wrapper ), Alert ( native OS popup dialog), Pressable, StyleSheet, Image
+
+## cron job? what does that mean
+A cron job is just: "run this piece of code automatically, on a schedule, with no human involved."
