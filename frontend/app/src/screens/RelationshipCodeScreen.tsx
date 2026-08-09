@@ -9,80 +9,22 @@ import {
 } from "react-native";
 import { supabase } from "../lib/supabase";
 import { onBoardingStyles } from "../styles/onboarding";
-import * as Localization from "expo-localization";
 import { ImageBackground } from "expo-image";
 
-export default function CreateProfileScreen({ navigation }: any) {
-    const [preferredName, setPreferredName] = useState("");
-    const [pronouns, setPronouns] = useState("");
-    const [timezone, setTimezone] = useState("");
+export default function RelationshipCodeScreen({ navigation }: any) {
+    const [partnerCode, setPartnerCode] = useState("");
     const [loading, setLoading] = useState(false);
-    const [tzOpen, setTzOpen] = useState(false);
-
-    const allZones = [
-        "America/Vancouver",
-        "America/Los_Angeles",
-        "America/Denver",
-        "America/Chicago",
-        "America/New_York",
-        "America/Toronto",
-        "America/Mexico_City",
-        "America/Sao_Paulo",
-        "America/Halifax",
-        "America/Anchorage",
-        "Pacific/Honolulu",
-        "Europe/London",
-        "Europe/Dublin",
-        "Europe/Paris",
-        "Europe/Berlin",
-        "Europe/Madrid",
-        "Europe/Rome",
-        "Europe/Amsterdam",
-        "Europe/Stockholm",
-        "Europe/Athens",
-        "Europe/Moscow",
-        "Europe/Istanbul",
-        "Africa/Cairo",
-        "Africa/Lagos",
-        "Africa/Johannesburg",
-        "Africa/Nairobi",
-        "Asia/Dubai",
-        "Asia/Karachi",
-        "Asia/Kolkata",
-        "Asia/Dhaka",
-        "Asia/Bangkok",
-        "Asia/Jakarta",
-        "Asia/Singapore",
-        "Asia/Hong_Kong",
-        "Asia/Shanghai",
-        "Asia/Manila",
-        "Asia/Taipei",
-        "Asia/Tokyo",
-        "Asia/Seoul",
-        "Asia/Kuala_Lumpur",
-        "Australia/Perth",
-        "Australia/Adelaide",
-        "Australia/Sydney",
-        "Australia/Brisbane",
-        "Pacific/Auckland",
-        "Pacific/Fiji",
-        "Pacific/Guam",
-    ];
-const filteredZones = allZones.filter((z) =>
-    z.toLowerCase().includes(timezone.toLowerCase())
-);
 
     useEffect(() => {
-        const detected = Localization.getCalendars()[0].timeZone;
 
-        if(detected) setTimezone(detected);
+        
 
     }, []);
 
     const handleCompleteProfile = async () => {
         setLoading(true);
 
-        if (!preferredName || !pronouns || !timezone) {
+        if (!partnerCode) {
             Alert.alert("Error", "Please fill in all fields");
             setLoading(false);
             return;
@@ -112,9 +54,6 @@ const filteredZones = allZones.filter((z) =>
                 },
                 // the actual data ur sending
                 body: JSON.stringify({
-                    preferred_name: preferredName,
-                    pronouns,
-                    timezone,
                 }),
             }
         );
@@ -146,46 +85,10 @@ const filteredZones = allZones.filter((z) =>
                 />
             </View>
 
-            <Text style={onBoardingStyles.title}> Create Profile</Text>
+            <Text style={onBoardingStyles.title}> Relationship Code</Text>
             <Text style={onBoardingStyles.subtitle}>
-                {" "}
-                Tell us more about you!
+                Pair with your partner..
             </Text>
-
-            <Text style={onBoardingStyles.inputTitle}> Preferred Name </Text>
-            <TextInput
-                style={onBoardingStyles.inputField}
-                value={preferredName}
-                onChangeText={setPreferredName}
-                // tells your keyboard to add @ into the keyboard makes it easier
-                autoCapitalize="none"
-                placeholder="avery"
-            />
-
-            <Text style={onBoardingStyles.inputTitle}> Pronouns </Text>
-            <TextInput
-                style={onBoardingStyles.inputField}
-                value={pronouns}
-                onChangeText={setPronouns}
-                autoCapitalize="none"
-                placeholder="she/her"
-            />
-
-            <TouchableOpacity
-                style={onBoardingStyles.finalButton}
-                onPress={handleCompleteProfile}
-                disabled={loading}
-            >
-                <ImageBackground
-                    source={require("../assets/tinified/onboardingButtonFinal.png")}
-                    style={onBoardingStyles.finalButtonImage}
-                    contentFit="fill"
-                >
-                    <Text style={onBoardingStyles.buttonText}>
-                        {loading ? "Loading" : "Next ->"}
-                    </Text>
-                </ImageBackground>
-            </TouchableOpacity>
 
             <View style={{ position: "absolute", bottom: 0, right: 130 }}>
                 <Image source={require("../assets/tinified/myblotch.png")} />

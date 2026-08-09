@@ -105,7 +105,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
             return;
         }
 
-        navigation.navigate("RelationshipCode");
+        navigation.navigate("relationshipCode");
         setLoading(false);
     };;
 
@@ -178,7 +178,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
                 value={window}
                 onChangeText={setWindow}
                 autoCapitalize="none"
-                placeholder="she/her"
+                placeholder="20"
             />
             <Text style={onBoardingStyles.subtitleno2}>
                 A 20-minute window means you can check in 20 minutes before or

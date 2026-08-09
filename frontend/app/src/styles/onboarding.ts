@@ -102,4 +102,6 @@ export const onBoardingStyles = StyleSheet.create({
         height: "100%",
         justifyContent: "center",
     },
+
+
 });
