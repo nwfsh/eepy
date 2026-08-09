@@ -25,7 +25,7 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
         // remember thawt coalesce means that use the first value, or use the already existing value 
         // already stored in the database <3 
         const[user] = await sql `
-        UPDATE users
+        UPDATE public.users
         SET preferred_name = COALESCE(${preferred_name}, preferred_name),
         pronouns = COALESCE(${pronouns}, pronouns),
         timezone = COALESCE(${timezone}, timezone)
@@ -48,7 +48,7 @@ userRouter.get("/me", requireAuth, async (req: Request, res: Response) => {
         // this is to represents an array of 
         const [user] = await sql` 
         SELECT id, email, preferred_name, pronouns, timezone, created_at
-        FROM users
+        FROM public.users
         WHERE id = ${userId}`
 
         if (!user) {
