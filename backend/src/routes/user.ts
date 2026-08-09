@@ -51,6 +51,7 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
         
         
     } catch (error) {
+        console.error("PATCH /user/me ERROR:", error);
         res.status(500).json({error: "internal server error"})
     }
 });
