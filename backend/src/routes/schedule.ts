@@ -14,6 +14,8 @@ scheduleRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         console.log("BACKEND RECEIVED BODY:", req.body);
         const userId = (req as any).user.id;
         const { wake_time, sleep_time, thewindow} = req.body;
+        console.log("PARSED:", { wake_time, sleep_time, thewindow });
+        console.log("CHECK RESULT:", !wake_time || !sleep_time || !thewindow);
 
         const tomorrow = new Date();
         tomorrow.setDate(tomorrow.getDate() + 1);
@@ -33,6 +35,8 @@ scheduleRouter.post("/", requireAuth, async (req: Request, res: Response) => {
 
         res.status(201).json({schedule});
     } catch (error) {
+        console.error("INSERT ERROR:", error);
+        console.error("ERROR MESSAGE:", (error as any).message);
         res.status(500).json({error: "internal server error"})
     }
 });
