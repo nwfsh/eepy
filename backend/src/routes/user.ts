@@ -15,6 +15,14 @@ userRouter.patch("/me", requireAuth, async ( req: Request, res:Response) => {
         const userId = (req as any).user.id;
         console.log("PATCH USER ID:", userId);
         const { preferred_name, pronouns, timezone } = req.body;
+
+        const rows = await sql`
+    SELECT id, email
+    FROM public.users
+    WHERE id = ${userId}
+`;
+
+        console.log("USER FOUND IN RENDER DB:", rows);
         
         
         // making sure at least one field is sent
