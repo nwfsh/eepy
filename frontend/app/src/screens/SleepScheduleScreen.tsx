@@ -105,7 +105,7 @@ export default function SleepScheduleScreen({ navigation }: any) {
             return;
         }
 
-        navigation.navigate("relationshipCode");
+        navigation.navigate("RelationshipCode");
         setLoading(false);
     };;
 

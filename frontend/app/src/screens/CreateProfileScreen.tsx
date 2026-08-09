@@ -6,6 +6,7 @@ import {
     TextInput,
     TouchableOpacity,
     Alert,
+    ScrollView,
 } from "react-native";
 import { supabase } from "../lib/supabase";
 import { onBoardingStyles } from "../styles/onboarding";
@@ -15,14 +16,67 @@ import { ImageBackground } from "expo-image";
 export default function CreateProfileScreen({ navigation }: any) {
     const [preferredName, setPreferredName] = useState("");
     const [pronouns, setPronouns] = useState("");
-    const [placeholdertimezone, setplaceholdertimezone] = useState("")
     const [timezone, setTimezone] = useState("");
     const [loading, setLoading] = useState(false);
+    const [tzOpen, setTzOpen] = useState(false);
+
+    const allZones = [
+        "America/Vancouver",
+        "America/Los_Angeles",
+        "America/Denver",
+        "America/Chicago",
+        "America/New_York",
+        "America/Toronto",
+        "America/Mexico_City",
+        "America/Sao_Paulo",
+        "America/Halifax",
+        "America/Anchorage",
+        "Pacific/Honolulu",
+        "Europe/London",
+        "Europe/Dublin",
+        "Europe/Paris",
+        "Europe/Berlin",
+        "Europe/Madrid",
+        "Europe/Rome",
+        "Europe/Amsterdam",
+        "Europe/Stockholm",
+        "Europe/Athens",
+        "Europe/Moscow",
+        "Europe/Istanbul",
+        "Africa/Cairo",
+        "Africa/Lagos",
+        "Africa/Johannesburg",
+        "Africa/Nairobi",
+        "Asia/Dubai",
+        "Asia/Karachi",
+        "Asia/Kolkata",
+        "Asia/Dhaka",
+        "Asia/Bangkok",
+        "Asia/Jakarta",
+        "Asia/Singapore",
+        "Asia/Hong_Kong",
+        "Asia/Shanghai",
+        "Asia/Manila",
+        "Asia/Taipei",
+        "Asia/Tokyo",
+        "Asia/Seoul",
+        "Asia/Kuala_Lumpur",
+        "Australia/Perth",
+        "Australia/Adelaide",
+        "Australia/Sydney",
+        "Australia/Brisbane",
+        "Pacific/Auckland",
+        "Pacific/Fiji",
+        "Pacific/Guam",
+    ];
+const filteredZones = allZones.filter((z) =>
+    z.toLowerCase().includes(timezone.toLowerCase())
+);
 
     useEffect(() => {
         const detected = Localization.getCalendars()[0].timeZone;
 
-        if(detected) setplaceholdertimezone(detected);
+        if(detected) setTimezone(detected);
 
     }, []);
 
@@ -77,8 +131,11 @@ export default function CreateProfileScreen({ navigation }: any) {
     };
 
     return (
-        <View style={[onBoardingStyles.container, // { backgroundColor: "#f8efff" }
-            ]}>
+        <View
+            style={[
+                onBoardingStyles.container, // { backgroundColor: "#f8efff" }
+            ]}
+        >
             <View style={{ position: "absolute", top: 0, left: 170 }}>
                 <Image
                     source={require("../assets/tinified/myotherblotch.png")}
@@ -110,10 +167,43 @@ export default function CreateProfileScreen({ navigation }: any) {
             <TextInput
                 style={onBoardingStyles.inputField}
                 value={timezone}
-                onChangeText={setTimezone}
+                onChangeText={(text) => {
+                    setTimezone(text); // typing updates the value AND the filter
+                    setTzOpen(true); // show suggestions as they type
+                }}
+                onFocus={() => setTzOpen(true)}
                 autoCapitalize="none"
-                placeholder= {placeholdertimezone}
+                placeholder="Search e.g. Vancouver"
             />
+
+            {tzOpen && filteredZones.length > 0 && (
+                <View
+                    style={{
+                        maxHeight: 200,
+                        borderWidth: 1,
+                        borderColor: "#eee",
+                        borderRadius: 8,
+                    }}
+                >
+                    <ScrollView keyboardShouldPersistTaps="handled">
+                        {filteredZones.map((zone) => (
+                            <TouchableOpacity
+                                key={zone}
+                                style={{
+                                    paddingVertical: 12,
+                                    paddingHorizontal: 8,
+                                }}
+                                onPress={() => {
+                                    setTimezone(zone); // fill the field with the picked value
+                                    setTzOpen(false); // close the suggestions
+                                }}
+                            >
+                                <Text>{zone}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
+                </View>
+            )}
 
             <Text style={onBoardingStyles.inputTitle}> Pronouns </Text>
             <TextInput
@@ -145,9 +235,7 @@ export default function CreateProfileScreen({ navigation }: any) {
             </View>
 
             <View style={{ position: "absolute", bottom: 0, left: 0 }}>
-                <Image
-                    source={require("../assets/tinified/whiteblob.png")}
-                />
+                <Image source={require("../assets/tinified/whiteblob.png")} />
             </View>
         </View>
     );
