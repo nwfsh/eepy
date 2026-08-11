@@ -106,10 +106,28 @@ export const onBoardingStyles = StyleSheet.create({
     box: {
         backgroundColor: colors.input,
         borderRadius: 12,
-        borderWidth: 1,      
-        padding: 20,            
+        borderWidth: 1,
+        height: 172,
+        padding: 20,
         borderColor: colors.inputBorder,
         elevation: 2,
+        marginTop: 30,
+    },
+    codeBigText: {
+        fontSize: 20,
+        fontFamily: "Inter_400Regular",
+        color: colors.inputTitle,
+        fontWeight: "400",
+        textAlign: "center",
+        marginBottom: 30,
+    },
+
+    codeSmallText: {
+        fontSize: 12,
+        fontFamily: "Inter_400Regular",
+        color: colors.finalButtonText,
+        fontWeight: "400",
+        textAlign: "left",
     },
 });
 

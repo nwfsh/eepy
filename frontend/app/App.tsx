@@ -27,6 +27,8 @@ function RootNavigator() {
     const { signOut } = useAuth();
     if (loading) return null;
 
+    
+
     return (
         <NavigationContainer>
             <Stack.Navigator screenOptions={{ headerShown: false }}>

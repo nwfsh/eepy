@@ -83,15 +83,55 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                 />
             </View>
 
-            <Text style={onBoardingStyles.title}> Relationship Code</Text>
+            <Text style={onBoardingStyles.title}>Relationship Code</Text>
             <Text style={onBoardingStyles.subtitle}>
                 Pair with your partner..
             </Text>
 
-            <View style = {onBoardingStyles.box}>
-
-
+            <View style={onBoardingStyles.box}>
+                <Text style={onBoardingStyles.codeBigText}>
+                    Invite Your Partner
+                </Text>
+                <View>
+                    <Text style={onBoardingStyles.codeSmallText}>
+                        Your Code : Click to Copy
+                    </Text>
+                    <Image
+                        source={require("../assets/tinified/yellowbox.png")}
+                    />
+                </View>
             </View>
+
+            <View style={onBoardingStyles.box}>
+                <Text style={onBoardingStyles.codeBigText}>
+                    Enter partner Code
+                </Text>
+                <View>
+                    <Text style={onBoardingStyles.codeSmallText}>
+                        Partner’s Code :
+                    </Text>
+                    <Image
+                        source={require("../assets/tinified/yellowbox.png")}
+                    />
+                </View>
+            </View>
+
+            <TouchableOpacity
+                style={onBoardingStyles.finalButton}
+                onPress={handleCompleteProfile}
+                disabled={loading}
+                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+            >
+                <ImageBackground
+                    source={require("../assets/tinified/onboardingButtonFinal.png")}
+                    style={onBoardingStyles.finalButtonImage}
+                    contentFit="fill"
+                >
+                    <Text style={onBoardingStyles.buttonText}>
+                        {loading ? "Loading..." : "Complete"}
+                    </Text>
+                </ImageBackground>
+            </TouchableOpacity>
 
             <View style={{ position: "absolute", bottom: 0, right: 130 }}>
                 <Image source={require("../assets/tinified/myblotch.png")} />
