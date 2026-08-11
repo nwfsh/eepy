@@ -111,7 +111,6 @@ export const onBoardingStyles = StyleSheet.create({
         padding: 20,
         borderColor: colors.inputBorder,
         elevation: 2,
-        marginTop: 30,
     },
     codeBigText: {
         fontSize: 20,
@@ -119,7 +118,8 @@ export const onBoardingStyles = StyleSheet.create({
         color: colors.inputTitle,
         fontWeight: "400",
         textAlign: "center",
-        marginBottom: 30,
+        marginTop: 10,
+        marginBottom: 0,
     },
 
     codeSmallText: {
@@ -128,6 +128,27 @@ export const onBoardingStyles = StyleSheet.create({
         color: colors.finalButtonText,
         fontWeight: "400",
         textAlign: "left",
+        marginTop: 20,
+        marginLeft: 16,
+    },
+    orCircle: {
+        width: 59,
+        height: 59,
+        borderRadius: 29.5,
+        borderWidth: 1,
+        borderColor: colors.inputBorder,
+        backgroundColor: colors.background,
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        marginTop: -14,
+        marginBottom: -14,
+        zIndex: 10,
+    },
+    orText: {
+        color: "#6B5B95",
+        fontSize: 16,
+        fontFamily: "Inter_500Medium",
     },
 });
 

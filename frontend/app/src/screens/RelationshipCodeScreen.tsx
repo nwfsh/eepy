@@ -88,36 +88,68 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                 Pair with your partner..
             </Text>
 
-            <View style={onBoardingStyles.box}>
-                <Text style={onBoardingStyles.codeBigText}>
-                    Invite Your Partner
-                </Text>
-                <View>
-                    <Text style={onBoardingStyles.codeSmallText}>
-                        Your Code : Click to Copy
+            <View>
+                <View style={onBoardingStyles.box}>
+                    <Text style={onBoardingStyles.codeBigText}>
+                        Invite Your Partner
                     </Text>
-                    <Image
-                        source={require("../assets/tinified/yellowbox.png")}
-                    />
+                    <View>
+                        <Text style={onBoardingStyles.codeSmallText}>
+                            Your Code : Click to Copy
+                        </Text>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Image
+                                source={require("../assets/tinified/yellowbox.png")}
+                            />
+                            <Text
+                                style={[
+                                    onBoardingStyles.codeBigText,
+                                    {
+                                        position: "absolute",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    },
+                                ]}
+                            >
+                                KX7F2M
+                            </Text>
+                        </View>
+                    </View>
                 </View>
-            </View>
+                <View style={onBoardingStyles.orCircle}>
+                    <Text style={onBoardingStyles.orText}>OR</Text>
+                </View>
 
-            <View style={onBoardingStyles.box}>
-                <Text style={onBoardingStyles.codeBigText}>
-                    Enter partner Code
-                </Text>
-                <View>
-                    <Text style={onBoardingStyles.codeSmallText}>
-                        Partner’s Code :
+                <View style={onBoardingStyles.box}>
+                    <Text style={onBoardingStyles.codeBigText}>
+                        Enter partner Code
                     </Text>
-                    <Image
-                        source={require("../assets/tinified/yellowbox.png")}
-                    />
+                    <View>
+                        <Text style={onBoardingStyles.codeSmallText}>
+                            Partner’s Code :
+                        </Text>
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
+                        >
+                            <Image
+                                style={{ marginBottom: 10 }}
+                                source={require("../assets/tinified/yellowbox.png")}
+                            />
+                        </View>
+                    </View>
                 </View>
             </View>
 
             <TouchableOpacity
-                style={onBoardingStyles.finalButton}
+                style={[onBoardingStyles.finalButton]}
                 onPress={handleCompleteProfile}
                 disabled={loading}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
