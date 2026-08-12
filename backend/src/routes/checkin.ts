@@ -6,7 +6,7 @@ import { DateTime } from "luxon";
 const checkinRouter = Router();
 
 // POST /checkin — check in for morning or night window
-checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
+checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
         const { phase } = req.body;
@@ -27,18 +27,22 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         `;
 
         if (!schedule) {
-            res.status(404).json({ error: "No sleep schedule found. Set one first." });
+            res.status(404).json({
+                error: "No sleep schedule found. Set one first.",
+            });
             return;
         }
 
         // 2. get current time in user's timezone as minutes since midnight
         const now = new Date();
-        const userTime = DateTime.now().setZone(schedule.timezone); // THIS IS THE SINGLE SOURCE OF TRUTH, ALWAYS USE THIS TIME 
+        const userTime = DateTime.now().setZone(schedule.timezone); // THIS IS THE SINGLE SOURCE OF TRUTH, ALWAYS USE THIS TIME
         const currentMinutes = userTime.hour * 60 + userTime.minute;
 
         // 3. check if within window
-        const targetTime = phase === "morning" ? schedule.wake_time : schedule.sleep_time;
-        const withinWindow = Math.abs(currentMinutes - targetTime) <= schedule.thewindow;
+        const targetTime =
+            phase === "morning" ? schedule.wake_time : schedule.sleep_time;
+        const withinWindow =
+            Math.abs(currentMinutes - targetTime) <= schedule.thewindow;
         // math abs always turns the value positive -> basically asks if youre between the target time
 
         // before deducting check if they have enough
@@ -47,7 +51,9 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         `;
 
         if (!withinWindow && userTokens.tokens < 4) {
-            res.status(400).json({ error: "Not enough tokens to unlock outside your window" });
+            res.status(400).json({
+                error: "Not enough tokens to unlock outside your window",
+            });
             return;
         }
 
@@ -63,12 +69,14 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         `;
 
         if (!relationship) {
-            res.status(404).json({ error: "You are not in a relationship yet" });
+            res.status(404).json({
+                error: "You are not in a relationship yet",
+            });
             return;
         }
 
         // 5. check if already checked in today
-        const today = userTime.toISODate();// dont use new Date as it takes YOUR DATE 
+        const today = userTime.toISODate(); // dont use new Date as it takes YOUR DATE
         const [existingCheckin] = await sql`
             SELECT id FROM checkin
             WHERE user_id = ${userId}
@@ -77,7 +85,9 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         `;
 
         if (existingCheckin) {
-            res.status(400).json({ error: "You have already checked in for this phase today" });
+            res.status(400).json({
+                error: "You have already checked in for this phase today",
+            });
             return;
         }
 
@@ -87,7 +97,6 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
             VALUES (${relationship.id}, ${userId}, ${phase}, ${today}, true, NOW())
             RETURNING id, phase, cycle_date, has_checked_in, checked_in_at
         `;
-
 
         // 7. unlock the incoming message
         await sql`
@@ -135,9 +144,8 @@ checkinRouter.post("/", requireAuth, async (req: Request, res: Response) => {
             checkin,
             on_time: withinWindow,
             token_change: tokenChange,
-            streak_updated: !!partnerCheckin
+            streak_updated: !!partnerCheckin,
         });
-
     } catch (error) {
         console.error("POST /checkin error:", error);
         res.status(500).json({ error: "Internal server error" });

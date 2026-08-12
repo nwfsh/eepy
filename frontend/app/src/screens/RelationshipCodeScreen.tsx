@@ -10,16 +10,54 @@ import {
 import { supabase } from "../lib/supabase";
 import { onBoardingStyles } from "../styles/onboarding";
 import { ImageBackground } from "expo-image";
+import * as Clipboard from "expo-clipboard";
 
 export default function RelationshipCodeScreen({ navigation }: any) {
     const [partnerCode, setPartnerCode] = useState("");
+    const [myCode, setMyCode] = useState("");
     const [loading, setLoading] = useState(false);
 
+   
     useEffect(() => {
+        const loadCode = async () => {
+            const {
+                data: { session },
+            } = await supabase.auth.getSession();
+            const headers = {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${session?.access_token}`,
+            };
 
-    }, []);
+            // see if there is exisitng relationship, if they went back to the first screen by accident
+            let res = await fetch(
+                `${process.env.EXPO_PUBLIC_API_URL}/relationship/information`,
+                { headers }
+            );
 
-    const handleCompleteProfile = async () => {
+            if (res.status === 404) {
+                res = await fetch(
+                    `${process.env.EXPO_PUBLIC_API_URL}/relationship`,
+                    { method: "POST", headers }
+                );
+            }
+
+            if (res.ok) {
+                const data = await res.json();
+                setMyCode(data.relationship.code);
+            } else {
+                console.log("failed:", res.status); // ← also add a log so failures aren't silent
+            }
+        };
+        loadCode();
+    }, []); 
+
+     const handleCopyCode = async () => {
+        await Clipboard.setStringAsync(myCode);
+        Alert.alert("Copied","Your code is copied to the clipboard");
+     };
+    
+
+    const handleRelationshipCode = async () => {
         setLoading(true);
 
         if (!partnerCode) {
@@ -34,12 +72,6 @@ export default function RelationshipCodeScreen({ navigation }: any) {
             data: { session },
         } = await supabase.auth.getSession();
 
-        // we need to fetch via ${process.env.EXPO_PUBLIC_API_URL}
-        // as back then, frontend and backend was  was on the same server for cpsc 310 project
-        // but now frontend and backend are now on diff server, frontend = phone, backend = laptop
-        // so u cant use relative URL to connect them
-        // this is the full url
-
         const response = await fetch(
             `${process.env.EXPO_PUBLIC_API_URL}/user/me`,
             {
@@ -51,8 +83,7 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                     Authorization: `Bearer ${session?.access_token}`,
                 },
                 // the actual data ur sending
-                body: JSON.stringify({
-                }),
+                body: JSON.stringify({}),
             }
         );
 
@@ -103,21 +134,31 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                                 alignItems: "center",
                             }}
                         >
-                            <Image
-                                source={require("../assets/tinified/yellowbox.png")}
-                            />
-                            <Text
-                                style={[
-                                    onBoardingStyles.codeBigText,
-                                    {
-                                        position: "absolute",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    },
-                                ]}
+                            <TouchableOpacity
+                                onPress={handleCopyCode}
+                                style={{
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}
                             >
-                                KX7F2M
-                            </Text>
+                                <Image
+                                    source={require("../assets/tinified/yellowbox.png")}
+                                />
+
+                                <Text
+                                    style={[
+                                        onBoardingStyles.codeBigText,
+                                        {
+                                            position: "absolute",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            marginTop: -7,
+                                        },
+                                    ]}
+                                >
+                                    {myCode || "..."}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                     </View>
                 </View>
@@ -150,7 +191,7 @@ export default function RelationshipCodeScreen({ navigation }: any) {
 
             <TouchableOpacity
                 style={[onBoardingStyles.finalButton]}
-                onPress={handleCompleteProfile}
+                onPress={handleRelationshipCode}
                 disabled={loading}
                 hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
             >

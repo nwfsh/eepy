@@ -74,6 +74,10 @@ relationshipRouter.patch("/add", requireAuth, async(req: Request, res: Response)
         RETURNING code, user1_id, user2_id, streak_counter
         `
         // only return the things where frontend needed it 
+        if (!relationship) {
+            res.status(409).json({ error: "This code has already been used" });
+            return;
+        }
 
         res.status(200).json({relationship})
 
