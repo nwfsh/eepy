@@ -19,18 +19,42 @@ import {
 import { Asset } from "expo-asset";
 import { useEffect, useState } from "react";
 import SleepScheduleScreen from "./src/screens/SleepScheduleScreen";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 
+const PERSISTENCE_KEY = "NAVIGATION_STATE";
+
 function RootNavigator() {
     const { session, loading } = useAuth();
-    const { signOut } = useAuth();
+    const [ isReady, setIsReady ] = useState(false);
+    const [initialState, setInitialState] = useState();
+
+    // purely for persistnence 
+     useEffect(() => {
+         const restoreState = async () => {
+             try {
+                 const savedState = await AsyncStorage.getItem(PERSISTENCE_KEY);
+                 if (savedState) {
+                     setInitialState(JSON.parse(savedState));
+                 }
+             } finally {
+                 setIsReady(true);
+             }
+         };
+         restoreState();
+     }, []);
+
     if (loading) return null;
 
     
-
     return (
-        <NavigationContainer>
+        <NavigationContainer
+            initialState={initialState}
+            onStateChange={(state) =>
+                AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+            }
+        >
             <Stack.Navigator screenOptions={{ headerShown: false }}>
                 {session ? (
                     <>
