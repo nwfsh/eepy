@@ -9,7 +9,7 @@ export const colors = {
     sunText: "#FFDB75",
 };
 
-export const homeScreenStyles = {
+export const homeScreenStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
@@ -28,20 +28,20 @@ export const homeScreenStyles = {
         color: colors.textMuted,
         fontFamily: "Inter_500Medium",
         fontSize: 16,
-        fontAlign: "center",
+        textAlign: "center",
     },
 
     timeTitle: {
-        colors: colors.timeText,
+        color: colors.timeText,
         fontFamily: "Inter_500Medium",
         fontSize: 14,
-        fontAlign: "left",
+        textAlign: "left",
     },
 
     time: {
-        colors: colors.text,
+        color: colors.text,
         fontFamily: "Inter_500Medium",
         fontSize: 36,
-        fontAlign: "left",
+        textAlign: "left",
     },
-};
+});
