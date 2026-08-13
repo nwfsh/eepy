@@ -21,6 +21,7 @@ import { Asset } from "expo-asset";
 import { useEffect, useState } from "react";
 import SleepScheduleScreen from "./src/screens/SleepScheduleScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const Stack = createStackNavigator();
 
@@ -53,49 +54,51 @@ const { signOut } = useAuth();
 
     
     return (
-        <NavigationContainer
-            initialState={initialState}
-            onStateChange={(state) =>
-                AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
-            }
-        >
-            <Stack.Navigator screenOptions={{ headerShown: false }}>
-                {session ? (
-                    <>
-                        <Stack.Screen
-                            name="CreateProfile"
-                            component={CreateProfileScreen}
-                        />
-                        <Stack.Screen
-                            name="SleepSchedule"
-                            component={SleepScheduleScreen}
-                        />
-                        <Stack.Screen
-                            name="RelationshipCode"
-                            component={RelationshipCodeScreen}
-                        />
-                        <Stack.Screen
-                            name="MorningHomeScreen"
-                            component={MorningHomeScreen}
-                        />
-                        {/* later: RelationshipCode, Home, etc. */}
-                    </>
-                ) : (
-                    <>
-                        <Stack.Screen
-                            name="SignIn"
-                            component={SignInScreen}
-                            options={{ animation: "fade" }}
-                        />
-                        <Stack.Screen
-                            name="SignUp"
-                            component={SignUpScreen}
-                            options={{ animation: "fade" }}
-                        />
-                    </>
-                )}
-            </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaProvider>
+            <NavigationContainer
+                initialState={initialState}
+                onStateChange={(state) =>
+                    AsyncStorage.setItem(PERSISTENCE_KEY, JSON.stringify(state))
+                }
+            >
+                <Stack.Navigator screenOptions={{ headerShown: false }}>
+                    {session ? (
+                        <>
+                            <Stack.Screen
+                                name="CreateProfile"
+                                component={CreateProfileScreen}
+                            />
+                            <Stack.Screen
+                                name="SleepSchedule"
+                                component={SleepScheduleScreen}
+                            />
+                            <Stack.Screen
+                                name="RelationshipCode"
+                                component={RelationshipCodeScreen}
+                            />
+                            <Stack.Screen
+                                name="MorningHomeScreen"
+                                component={MorningHomeScreen}
+                            />
+                            {/* later: RelationshipCode, Home, etc. */}
+                        </>
+                    ) : (
+                        <>
+                            <Stack.Screen
+                                name="SignIn"
+                                component={SignInScreen}
+                                options={{ animation: "fade" }}
+                            />
+                            <Stack.Screen
+                                name="SignUp"
+                                component={SignUpScreen}
+                                options={{ animation: "fade" }}
+                            />
+                        </>
+                    )}
+                </Stack.Navigator>
+            </NavigationContainer>
+        </SafeAreaProvider>
     );
 }
 

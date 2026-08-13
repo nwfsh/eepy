@@ -149,7 +149,10 @@ export const onBoardingStyles = StyleSheet.create({
         color: "#6B5B95",
         fontSize: 16,
         fontFamily: "Inter_500Medium",
+        
     },
+
+
 });
 
 

@@ -13,8 +13,9 @@ export const homeScreenStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: colors.background,
-        paddingHorizontal: 20,
-        justifyContent: "center",
+        paddingHorizontal: 10,
+        justifyContent: "flex-start",
+        alignItems: "center",
     },
 
     greeting: {
@@ -22,6 +23,7 @@ export const homeScreenStyles = StyleSheet.create({
         fontFamily: "Inter_500Medium",
         fontSize: 24,
         textAlign: "center",
+        paddingTop: 24,
     },
 
     greetingsubtitle: {
@@ -29,6 +31,8 @@ export const homeScreenStyles = StyleSheet.create({
         fontFamily: "Inter_500Medium",
         fontSize: 16,
         textAlign: "center",
+        paddingHorizontal: 120,
+        paddingTop: 8,
     },
 
     timeTitle: {
@@ -36,12 +40,24 @@ export const homeScreenStyles = StyleSheet.create({
         fontFamily: "Inter_500Medium",
         fontSize: 14,
         textAlign: "left",
+        marginTop: 30,
     },
 
     time: {
         color: colors.text,
         fontFamily: "Inter_500Medium",
-        fontSize: 36,
+        fontSize: 40,
         textAlign: "left",
+        marginBottom: 70,
+        marginLeft: -12,
+    },
+    sidebyside: {
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        gap: 56,
+    },
+    settingPlacement: {
+        left: 90,
+        marginBottom: -70,
     },
 });
