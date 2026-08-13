@@ -27,19 +27,11 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${session?.access_token}`,
             };
-
-            // see if there is exisitng relationship, if they went back to the first screen by accident
+        
             let res = await fetch(
-                `${process.env.EXPO_PUBLIC_API_URL}/relationship/information`,
-                { headers }
-            );
-
-            if (res.status === 404) {
-                res = await fetch(
                     `${process.env.EXPO_PUBLIC_API_URL}/relationship`,
                     { method: "POST", headers }
                 );
-            }
 
             if (res.ok) {
                 const data = await res.json();
@@ -60,11 +52,6 @@ export default function RelationshipCodeScreen({ navigation }: any) {
     const handleRelationshipCode = async () => {
         setLoading(true);
 
-        if (!partnerCode) {
-            Alert.alert("Error", "Please fill in all fields");
-            setLoading(false);
-            return;
-        }
         // get the current session of the device
         // pulls specifically the session
 
@@ -72,8 +59,9 @@ export default function RelationshipCodeScreen({ navigation }: any) {
             data: { session },
         } = await supabase.auth.getSession();
 
-        const response = await fetch(
-            `${process.env.EXPO_PUBLIC_API_URL}/user/me`,
+        if(partnerCode != "") {
+            const response = await fetch(
+                 `${process.env.EXPO_PUBLIC_API_URL}/relationship/add`,
             {
                 // tell them what method ur using in the backend
                 method: "PATCH",
@@ -83,17 +71,18 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                     Authorization: `Bearer ${session?.access_token}`,
                 },
                 // the actual data ur sending
-                body: JSON.stringify({}),
+                body: JSON.stringify({relationshipCode: partnerCode}),
             }
-        );
+            );
 
-        if (!response.ok) {
-            Alert.alert("Error", "Failed to save full profile");
+            if (!response.ok) {
+            Alert.alert("Error", "Invalid or already-used code");
             setLoading(false);
             return;
         }
-
-        navigation.navigate("SleepSchedule");
+        }
+    
+        navigation.navigate("MorningHomeScreen");
         setLoading(false);
     };
 
@@ -184,6 +173,22 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                                 style={{ marginBottom: 10 }}
                                 source={require("../assets/tinified/yellowbox.png")}
                             />
+                            <TextInput
+                                style={[
+                                    onBoardingStyles.codeBigText,
+                                    {
+                                        position: "absolute",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        marginTop: -15,
+                                        padding: 110
+                                    },
+                                ]}
+                                value={partnerCode}
+                                onChangeText={setPartnerCode}
+                                maxLength={6}
+                                autoCapitalize="characters"
+                            ></TextInput>
                         </View>
                     </View>
                 </View>

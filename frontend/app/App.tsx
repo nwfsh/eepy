@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "./src/context/AuthContext";
 import SignInScreen from "./src/screens/SignInScreen";
 import SignUpScreen from "./src/screens/SignUpScreen";
 import CreateProfileScreen from './src/screens/CreateProfileScreen'
+import MorningHomeScreen from "./src/screens/MorningHomeScreen";
 import RelationshipCodeScreen from './src/screens/RelationshipCodeScreen'
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -29,6 +30,9 @@ function RootNavigator() {
     const { session, loading } = useAuth();
     const [ isReady, setIsReady ] = useState(false);
     const [initialState, setInitialState] = useState();
+const { signOut } = useAuth();
+
+
 
     // purely for persistnence 
      useEffect(() => {
@@ -69,6 +73,10 @@ function RootNavigator() {
                         <Stack.Screen
                             name="RelationshipCode"
                             component={RelationshipCodeScreen}
+                        />
+                        <Stack.Screen
+                            name="MorningHomeScreen"
+                            component={MorningHomeScreen}
                         />
                         {/* later: RelationshipCode, Home, etc. */}
                     </>
