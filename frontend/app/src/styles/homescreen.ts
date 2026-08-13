@@ -60,4 +60,9 @@ export const homeScreenStyles = StyleSheet.create({
         left: 90,
         marginBottom: -70,
     },
+
+    notifPlacement: {
+        left: "30%",
+        marginTop: 40,
+    },
 });

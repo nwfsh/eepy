@@ -33,7 +33,7 @@ return (
             <Image source={require("../assets/tinified/settings.png")} />
         </View>
 
-        <View>
+        <View style={{right:2}}>
             <Image source={require("../assets/tinified/sun.png")} />
         </View>
 
@@ -41,7 +41,7 @@ return (
         <Text style={homeScreenStyles.greetingsubtitle}>
             Your special message from Aidan is waiting for you..
         </Text>
-        <View>
+        <View style= {homeScreenStyles.notifPlacement}>
             <Image source={require("../assets/tinified/notif.png")} />
         </View>
     </SafeAreaView>
