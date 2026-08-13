@@ -78,6 +78,11 @@ relationshipRouter.patch("/add", requireAuth, async(req: Request, res: Response)
             res.status(409).json({ error: "This code has already been used" });
             return;
         }
+        // delete the one relationship where user1_id is created ( based on front end logic)
+        await sql`
+    DELETE FROM relationship
+    WHERE user1_id = ${userId} AND user2_id IS NULL
+`;
 
         res.status(200).json({relationship})
 
