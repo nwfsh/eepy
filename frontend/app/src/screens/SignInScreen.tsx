@@ -7,6 +7,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { ImageBackground } from "expo-image";
 import { Pressable, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import MorningHomeScreen from "./MorningHomeScreen";
 
 export default function SignInScreen({ navigation }: any) {
     const [email, setEmail] = useState("");
@@ -26,7 +27,9 @@ export default function SignInScreen({ navigation }: any) {
             Alert.alert("Error", error.message);
         }
         setLoading(false);
+        navigation.navigate("MorningHomeScreen");
     };
+
 
     return (
         <View

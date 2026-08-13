@@ -181,7 +181,8 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                                         alignItems: "center",
                                         justifyContent: "center",
                                         marginTop: -15,
-                                        padding: 110
+                                        padding: 20,
+                                        width: 200,
                                     },
                                 ]}
                                 value={partnerCode}
@@ -198,7 +199,7 @@ export default function RelationshipCodeScreen({ navigation }: any) {
                 style={[onBoardingStyles.finalButton]}
                 onPress={handleRelationshipCode}
                 disabled={loading}
-                hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                hitSlop={{ top: 20, bottom: 20, left: 20, right: 20 }}
             >
                 <ImageBackground
                     source={require("../assets/tinified/onboardingButtonFinal.png")}

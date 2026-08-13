@@ -108,6 +108,7 @@ relationshipRouter.get("/information",requireAuth, async(req: Request, res: Resp
         const userId = (req as any).user.id;
 
         // name of partner and timezone of partner is changed temporarily 
+        // now u can get partner name and timezone EASILY through information 
 
         const [relationship] = await sql `
         SELECT r.code, r.streak_counter, r.created_at, 
