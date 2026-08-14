@@ -99,16 +99,19 @@ return (
         <View style={homeScreenStyles.settingPlacement}>
             <Image source={require("../assets/tinified/settings.png")} />
         </View>
-        <View style={{ right:70, marginBottom: -50 }}>
-            <Image source={require("../assets/tinified/top rays.png")} />
-        </View>
 
-        <View>
-            <Image source={require("../assets/tinified/sunwithoutray.png")} />
-        </View>
-
-        <View style={{ left:100, marginTop: -50 }}>
-            <Image source={require("../assets/tinified/bottom rays.png")} />
+        <View style={{ alignItems: "center", justifyContent: "center" }}>
+            {/* rays layered UNDER the sun, both centered on the same point */}
+            <Image
+                source={require("../assets/tinified/frametopray.png")}
+                style={{ position: "absolute" }}
+            />
+            <Image
+                source={require("../assets/tinified/framebottomray.png")}
+                style={{ position: "absolute" }}
+            />
+            {/* sun on top, in normal flow so it defines the container size */}
+            <Image source={require("../assets/tinified/framenakedcircle.png")} />
         </View>
 
         <Text style={homeScreenStyles.greeting}>Good Morning, {myName}!</Text>
