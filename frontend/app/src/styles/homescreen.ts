@@ -1,4 +1,7 @@
 import { StyleSheet } from "react-native"
+import { Dimensions } from "react-native";
+const { width } = Dimensions.get("window");
+const scale = (size: number) => (width / 375) * size;  // 375 = baseline iPhone width
 
 
 export const colors = {
@@ -31,7 +34,7 @@ export const homeScreenStyles = StyleSheet.create({
         fontFamily: "Inter_500Medium",
         fontSize: 16,
         textAlign: "center",
-        paddingHorizontal: 120,
+        paddingHorizontal: "15%",
         paddingTop: 8,
     },
 
@@ -54,10 +57,10 @@ export const homeScreenStyles = StyleSheet.create({
     sidebyside: {
         flexDirection: "row",
         justifyContent: "flex-start",
-        gap: 56,
+        gap: scale(32),
     },
     settingPlacement: {
-        left: 90,
+        left: "20%",
         marginBottom: -70,
     },
 

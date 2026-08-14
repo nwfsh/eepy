@@ -33,6 +33,7 @@ function RootNavigator() {
     const [initialState, setInitialState] = useState();
 const { signOut } = useAuth();
 
+
     // purely for persistnence 
      useEffect(() => {
          const restoreState = async () => {
@@ -49,6 +50,8 @@ const { signOut } = useAuth();
      }, []);
 
     if (loading) return null;
+
+
 
     
     return (
