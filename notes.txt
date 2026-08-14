@@ -67,3 +67,15 @@ View, Text,  TouchableOpacity ( tappable wrapper ), Alert ( native OS popup dial
 
 ## cron job? what does that mean
 A cron job is just: "run this piece of code automatically, on a schedule, with no human involved."
+
+        <View style={{ right:70, marginBottom: -50 }}>
+            <Image source={require("../assets/tinified/top rays.png")} />
+        </View>
+
+        <View>
+            <Image source={require("../assets/tinified/sunwithoutray.png")} />
+        </View>
+
+        <View style={{ left:100, marginTop: -50 }}>
+            <Image source={require("../assets/tinified/bottom rays.png")} />
+        </View>
