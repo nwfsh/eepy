@@ -80,27 +80,42 @@ return (
         <View style={homeScreenStyles.sidebyside}>
             <View>
                 <Text style={homeScreenStyles.timeTitle}>{myName} Time:</Text>
-                <Text style={homeScreenStyles.time}> {formatTime(myTimezone)}</Text>
+                <Text style={homeScreenStyles.time}>
+                    {" "}
+                    {formatTime(myTimezone)}
+                </Text>
             </View>
             <View>
-                <Text style={homeScreenStyles.timeTitle}>{partnerName}'s Time:</Text>
-                <Text style={homeScreenStyles.time}> {formatTime(PartnerTimezone)} </Text>
+                <Text style={homeScreenStyles.timeTitle}>
+                    {partnerName}'s Time:
+                </Text>
+                <Text style={homeScreenStyles.time}>
+                    {" "}
+                    {formatTime(PartnerTimezone)}{" "}
+                </Text>
             </View>
         </View>
 
         <View style={homeScreenStyles.settingPlacement}>
             <Image source={require("../assets/tinified/settings.png")} />
         </View>
+        <View style={{ right:70, marginBottom: -50 }}>
+            <Image source={require("../assets/tinified/top rays.png")} />
+        </View>
 
-        <View style={{right:2}}>
-            <Image source={require("../assets/tinified/sun.png")} />
+        <View>
+            <Image source={require("../assets/tinified/sunwithoutray.png")} />
+        </View>
+
+        <View style={{ left:100, marginTop: -50 }}>
+            <Image source={require("../assets/tinified/bottom rays.png")} />
         </View>
 
         <Text style={homeScreenStyles.greeting}>Good Morning, {myName}!</Text>
         <Text style={homeScreenStyles.greetingsubtitle}>
             Your special message from{partnerName} is waiting for you..
         </Text>
-        <View style= {homeScreenStyles.notifPlacement}>
+        <View style={homeScreenStyles.notifPlacement}>
             <Image source={require("../assets/tinified/notif.png")} />
         </View>
     </SafeAreaView>
