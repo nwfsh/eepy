@@ -221,3 +221,25 @@ create policy "users can insert media for their messages"
             SELECT id FROM messages WHERE from_id = auth.uid()
         )
     );
+
+-- more edits im gonna do for my schemaaaa
+-- 1. Add user_local_date to checkin table
+-- done so it can bite throguh 26 hour timezone difference 
+ALTER TABLE checkin
+  ADD COLUMN user_local_date date NOT NULL DEFAULT CURRENT_DATE;
+
+-- drop the default after backfill/dev-wipe — you said existing dev rows
+-- can just be deleted rather than backfilled, so:
+-- (run this INSTEAD of the DEFAULT clause above if you're wiping dev data)
+-- ALTER TABLE checkin ADD COLUMN user_local_date date NOT NULL;
+
+-- 2. Unique constraint: one row per user, per phase, per their own local day
+-- to prevent bugs, support idemponcy(?) becus if function to create row runs twice, it can at least delete easily
+ALTER TABLE checkin
+  ADD CONSTRAINT checkin_user_phase_localdate_unique
+  UNIQUE (user_id, phase, user_local_date);
+
+-- 3. Index for streak queries (partner lookup by shared cycle_date)
+-- makes the lookup faster for relationship !!
+CREATE INDEX idx_checkin_relationship_cycle
+  ON checkin (relationship_id, cycle_date);
