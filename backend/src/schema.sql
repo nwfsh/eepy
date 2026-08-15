@@ -243,3 +243,8 @@ ALTER TABLE checkin
 -- makes the lookup faster for relationship !!
 CREATE INDEX idx_checkin_relationship_cycle
   ON checkin (relationship_id, cycle_date);
+
+  TRUNCATE TABLE checkins;
+ALTER TABLE checkins ADD COLUMN user_local_date date NOT NULL;
+ALTER TABLE checkins ADD CONSTRAINT checkin_user_phase_localdate_unique UNIQUE (user_id, phase, user_local_date);
+CREATE INDEX idx_checkins_relationship_cycle ON checkins (relationship_id, cycle_date);
