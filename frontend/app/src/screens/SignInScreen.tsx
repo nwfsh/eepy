@@ -22,7 +22,7 @@ export default function SignInScreen({ navigation }: any) {
             email,
             password,
         });
-
+        
         if (error) {
             Alert.alert("Error", error.message);
         }
