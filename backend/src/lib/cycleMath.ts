@@ -83,6 +83,8 @@ export function correspondingMorningUTC(
  * No database access. Deterministic for a fixed `now`. This is the
  * function the unit tests validate against the paper examples.
  */
+
+// THIS IS THE ONLY FUNCTION YOURE EVER USING, THE REST ARE HELPER FUNCTIONS 
 export function computeCycle(
     schedule1: ResolvedSchedule,
     schedule2: ResolvedSchedule,
@@ -137,7 +139,9 @@ export function computeCycle(
     };
 }
 
-// UTC now
-//  → user timezone     so you can build "their 2am"
-// → UTC               so you can compare both partners
-//  → user timezone     so you can get their local calendar date for the DB
+// UTC now              ( EXACT TIME STAMPS )
+//  → user timezone     so you can build "their 2am" ( EXACT TIMESTAMP INCLUDING DATE ) 
+// → UTC               so you can compare both partners () EXACT TIME STAMPS OF EACH )
+//  → user timezone     so you can get their local calendar date for the DB ( DATE )
+
+// the cycle is needed becu
