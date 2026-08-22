@@ -124,21 +124,34 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
             WHERE id = ${userId}
         `;
 
+        // NOT EFFICIENT ENOUGH, PLS USE A WHERE EXIST SEEING IF CHECK IN EXIST, 
+        // THEN UPDATE, DO A IF EXIST 
         // 9. check if partner also checked in today — if so, increment streak
-        const [partnerCheckin] = await sql`
-            SELECT id FROM checkin
-            WHERE user_id = ${relationship.partner_id}
-            AND phase = ${phase}
-            AND cycle_date = ${today}
-        `;
+        // const [partnerCheckin] = await sql`
+        //     SELECT id FROM checkin
+        //     WHERE user_id = ${relationship.partner_id}
+        //     AND phase = ${phase}
+        //     AND cycle_date = ${today}
+        // `;
 
-        if (partnerCheckin) {
-            await sql`
-                UPDATE relationship
-                SET streak_counter = streak_counter + 1
-                WHERE id = ${relationship.id}
-            `;
-        }
+        // if (partnerCheckin) {
+        //     await sql`
+        //         UPDATE relationship
+        //         SET streak_counter = streak_counter + 1
+        //         WHERE id = ${relationship.id}
+        //     `;
+        // }
+        const [partnerCheckin] = await sql`
+        UPDATE relationship
+        SET streak_counter = streak_counter + 1
+        WHERE id = ${relationship.id}
+            AND EXISTS(
+                    SELECT id FROM checkin
+                    WHERE user_id = ${relationship.partner_id}
+                    AND phase = ${phase}
+                    AND cycle_date = ${today})
+        RETURNING id 
+        `;
 
         res.status(201).json({
             checkin,
