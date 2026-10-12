@@ -21,7 +21,8 @@ scheduleRouter.post("/", requireAuth, async (req: Request, res: Response) => {
         tomorrow.setDate(tomorrow.getDate() + 1);
         const effective_date = tomorrow.toISOString().split('T')[0]; // gives "2026-07-22"
 
-        if (!wake_time || !sleep_time || !thewindow) {
+        // check for undefined, not false rejects 0 as an actual time value, which is valid for wake_time or sleep_time
+        if (wake_time === undefined || sleep_time === undefined || thewindow === undefined) {
             res.status(400).json({ error: "missing fields" });
             return;
         }
@@ -60,7 +61,7 @@ scheduleRouter.get("/current", requireAuth, async( req: Request , res: Response)
             res.status(404).json({error: "no schedule found"})
             return;
         }
-        return schedule;
+        res.status(200).json({ schedule });
     } catch(error) {
         res.status(500).json({error: "internal server error"})
     }

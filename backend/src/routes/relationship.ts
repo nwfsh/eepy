@@ -3,6 +3,7 @@
 import { Router, Response, Request} from "express";
 import { requireAuth } from "../middleware/auth";
 import sql from "../db"
+import { createCycleRows } from "../lib/cycleRows";
 
 const relationshipRouter = Router();
 
@@ -71,7 +72,7 @@ relationshipRouter.patch("/add", requireAuth, async(req: Request, res: Response)
         UPDATE relationship
         SET user2_id = ${userId}
         WHERE code = ${relationshipCode} AND user2_id IS NULL
-        RETURNING code, user1_id, user2_id, streak_counter
+        RETURNING id, code, user1_id, user2_id, streak_counter
         `
         // only return the things where frontend needed it 
         if (!relationship) {
@@ -83,6 +84,14 @@ relationshipRouter.patch("/add", requireAuth, async(req: Request, res: Response)
     DELETE FROM relationship
     WHERE user1_id = ${userId} AND user2_id IS NULL
 `;
+
+        // relationship just formed -> create the first cycle's checkin rows
+        // if this fails the join still worked, checkin.ts will create them later as a fallback
+        try {
+            await createCycleRows(relationship.id);
+        } catch (error) {
+            console.error("createCycleRows on join failed:", error);
+        }
 
         res.status(200).json({relationship})
 
