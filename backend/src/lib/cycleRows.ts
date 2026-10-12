@@ -61,8 +61,11 @@ async function getActiveSchedule(
  * callers must never pluck "their" row out of it; checkin.ts always does
  * its own lookup by user_id + phase + user_local_date afterwards.
  */
+// `now` defaults to the real time. checkin.ts passes a time just before the window
+// it's checking into, so the fallback creates rows for THAT window, not the next one
 export async function createCycleRows(
-    relationshipId: string
+    relationshipId: string,
+    now: DateTime = DateTime.utc()
 ): Promise<CreatedRow[]> {
     // grab their ids 
     const [relationship] = await sql`
@@ -93,7 +96,7 @@ export async function createCycleRows(
     }
 
     // 3. Pure math: cycle_date + all 4 rows' user_local_dates
-    const plan = computeCycle(schedule1, schedule2, DateTime.utc());
+    const plan = computeCycle(schedule1, schedule2, now);
 
     // 4. Insert. ON CONFLICT DO NOTHING = idempotency, enforced by the
     //    unique constraint, race-condition-safe (no check-then-insert gap).

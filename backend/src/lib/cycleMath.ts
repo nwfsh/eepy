@@ -70,6 +70,45 @@ export function correspondingMorningUTC(
 }
 
 /**
+ * nearestTarget — used by checkin.ts to figure out WHICH window you're checking in for.
+ *
+ * Builds the target time (wake or sleep) on yesterday, today and tomorrow in the
+ * user's timezone, and picks whichever is closest to now. This handles midnight:
+ * sleep at 23:50, checking in at 00:10 -> the closest target is YESTERDAY's 23:50,
+ * 20 mins away (not 1420 mins like Math.abs on minutes-since-midnight would say).
+ *
+ * localDate is the target's local date, which matches the user_local_date that
+ * computeCycle gives that row.
+ */
+export function nearestTarget(
+    timezone: string,
+    targetMinutes: number,
+    now: DateTime
+): { targetUTC: DateTime; localDate: string; diffMinutes: number } {
+    const nowInTz = now.setZone(timezone);
+
+    const today = nowInTz.set({
+        hour: Math.floor(targetMinutes / 60),
+        minute: targetMinutes % 60,
+        second: 0,
+        millisecond: 0,
+    });
+    const candidates = [today.minus({ days: 1 }), today, today.plus({ days: 1 })];
+
+    const diff = (c: DateTime) => Math.abs(c.diff(nowInTz, "minutes").minutes);
+    const nearest = candidates.reduce((best, c) => (diff(c) < diff(best) ? c : best));
+
+    const localDate = nearest.toISODate();
+    if (!localDate) throw new Error(`nearestTarget: invalid timezone ${timezone}`);
+
+    return {
+        targetUTC: nearest.toUTC(),
+        localDate,
+        diffMinutes: diff(nearest),
+    };
+}
+
+/**
  * computeCycle — the pure heart of createCycleRows.
  *
  * Given both partners' schedules and a reference `now`, determines the

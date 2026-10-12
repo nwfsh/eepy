@@ -2,10 +2,13 @@ import { Router, Request, Response } from "express";
 import { requireAuth } from "../middleware/auth";
 import sql from "../db";
 import { DateTime } from "luxon";
+import { nearestTarget } from "../lib/cycleMath";
+import { createCycleRows } from "../lib/cycleRows";
 
 const checkinRouter = Router();
 
-// POST /checkin — check in for morning or night window
+// POST /checkin/add — check in for morning or night window
+// the checkin row was already made ahead of time by createCycleRows, so this UPDATES it
 checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
@@ -16,13 +19,14 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
             return;
         }
 
-        // 1. get user's current schedule and timezone
+        // 1. get user's current schedule, timezone lives on users not sleep_schedule
         const [schedule] = await sql`
-            SELECT wake_time, sleep_time, thewindow, timezone
-            FROM sleep_schedule
-            WHERE user_id = ${userId}
-            AND effective_date <= CURRENT_DATE
-            ORDER BY effective_date DESC
+            SELECT ss.wake_time, ss.sleep_time, ss.thewindow, u.timezone
+            FROM sleep_schedule ss
+            JOIN users u ON u.id = ss.user_id
+            WHERE ss.user_id = ${userId}
+            AND ss.effective_date <= CURRENT_DATE
+            ORDER BY ss.effective_date DESC
             LIMIT 1
         `;
 
@@ -33,33 +37,17 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
             return;
         }
 
-        // 2. get current time in user's timezone as minutes since midnight
-        const now = new Date();
-        const userTime = DateTime.now().setZone(schedule.timezone); // THIS IS THE SINGLE SOURCE OF TRUTH, ALWAYS USE THIS TIME
-        const currentMinutes = userTime.hour * 60 + userTime.minute;
-
-        // 3. check if within window
-        const targetTime =
+        // 2. figure out which window this is + if we're inside it
+        // nearestTarget handles midnight (23:50 sleep, 00:10 checkin = 20 mins, yesterday's row)
+        const targetMinutes =
             phase === "morning" ? schedule.wake_time : schedule.sleep_time;
-        const withinWindow =
-            Math.abs(currentMinutes - targetTime) <= schedule.thewindow;
-        // math abs always turns the value positive -> basically asks if youre between the target time
+        const target = nearestTarget(schedule.timezone, targetMinutes, DateTime.utc());
+        const withinWindow = target.diffMinutes <= schedule.thewindow;
+        const tokenChange = withinWindow ? 1 : -4;
 
-        // before deducting check if they have enough
-        const [userTokens] = await sql`
-        SELECT tokens FROM users WHERE id = ${userId}
-        `;
-
-        if (!withinWindow && userTokens.tokens < 4) {
-            res.status(400).json({
-                error: "Not enough tokens to unlock outside your window",
-            });
-            return;
-        }
-
-        // 4. get relationship
+        // 3. get relationship
         const [relationship] = await sql`
-            SELECT id, user1_id, user2_id, streak_counter,
+            SELECT id,
                 CASE
                     WHEN user1_id = ${userId} THEN user2_id
                     WHEN user2_id = ${userId} THEN user1_id
@@ -75,90 +63,137 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
             return;
         }
 
-        // 5. check if already checked in today
-        const today = userTime.toISODate(); // dont use new Date as it takes YOUR DATE
-        const [existingCheckin] = await sql`
-            SELECT id FROM checkin
-            WHERE user_id = ${userId}
-            AND phase = ${phase}
-            AND cycle_date = ${today}
-        `;
-
-        if (existingCheckin) {
-            res.status(400).json({
-                error: "You have already checked in for this phase today",
-            });
+        if (!relationship.partner_id) {
+            res.status(400).json({ error: "Your partner has not joined yet" });
             return;
         }
 
-        // 6. create the checkin record
-        const [checkin] = await sql`
-            INSERT INTO checkin (relationship_id, user_id, phase, cycle_date, has_checked_in, checked_in_at)
-            VALUES (${relationship.id}, ${userId}, ${phase}, ${today}, true, NOW())
-            RETURNING id, phase, cycle_date, has_checked_in, checked_in_at
-        `;
-
-        // 7. unlock the incoming message
-        await sql`
-            UPDATE message
-            SET unlocked = true,
-                spent_coins = ${withinWindow ? 0 : -4}
-            WHERE to_id = ${userId}
+        // 4. fallback: if the cron / join never made this window's row, make it now
+        // pretend it's just before this window's night started, so computeCycle plans THIS cycle
+        // (morning -> go back by how long you sleep to reach the night before it)
+        const [existingRow] = await sql`
+            SELECT id FROM checkin
+            WHERE user_id = ${userId}
             AND phase = ${phase}
-            AND unlocked = false
-            AND id = (
-                SELECT id FROM message
-                WHERE to_id = ${userId}
+            AND user_local_date = ${target.localDate}
+        `;
+
+        if (!existingRow) {
+            const sleepLength =
+                (schedule.wake_time - schedule.sleep_time + 1440) % 1440;
+            const minutesBefore = phase === "night" ? 1 : sleepLength + 1;
+            await createCycleRows(
+                relationship.id,
+                target.targetUTC.minus({ minutes: minutesBefore })
+            );
+        }
+
+        // 5. everything else happens in ONE transaction -> either it all happens or none of it
+        const result = await sql.begin(async (txn) => {
+            // postgres.js types bug: the transaction works like sql`...` but TS thinks it isn't callable
+            const tx = txn as unknown as typeof sql;
+
+            // lock the relationship row so if both partners check in at the same time,
+            // one waits for the other -> streak can't go up twice (or zero times)
+            await tx`
+                SELECT id FROM relationship
+                WHERE id = ${relationship.id}
+                FOR UPDATE
+            `;
+
+            const [row] = await tx`
+                SELECT id, has_checked_in FROM checkin
+                WHERE user_id = ${userId}
                 AND phase = ${phase}
-                AND unlocked = false
-                ORDER BY sent_at DESC
-                LIMIT 1
-            )
-        `;
+                AND user_local_date = ${target.localDate}
+            `;
 
-        // 8. add or deduct tokens based on whether they were on time
-        const tokenChange = withinWindow ? 1 : -4;
-        await sql`
-            UPDATE users
-            SET tokens = tokens + ${tokenChange}
-            WHERE id = ${userId}
-        `;
+            if (!row) {
+                return {
+                    status: 404,
+                    body: { error: "No check-in for this window yet, make sure you both have a sleep schedule" },
+                };
+            }
 
-        // NOT EFFICIENT ENOUGH, PLS USE A WHERE EXIST SEEING IF CHECK IN EXIST, 
-        // THEN UPDATE, DO A IF EXIST 
-        // 9. check if partner also checked in today — if so, increment streak
-        // const [partnerCheckin] = await sql`
-        //     SELECT id FROM checkin
-        //     WHERE user_id = ${relationship.partner_id}
-        //     AND phase = ${phase}
-        //     AND cycle_date = ${today}
-        // `;
+            if (row.has_checked_in) {
+                return {
+                    status: 400,
+                    body: { error: "You have already checked in for this window" },
+                };
+            }
 
-        // if (partnerCheckin) {
-        //     await sql`
-        //         UPDATE relationship
-        //         SET streak_counter = streak_counter + 1
-        //         WHERE id = ${relationship.id}
-        //     `;
-        // }
-        const [partnerCheckin] = await sql`
-        UPDATE relationship
-        SET streak_counter = streak_counter + 1
-        WHERE id = ${relationship.id}
-            AND EXISTS(
-                    SELECT id FROM checkin
-                    WHERE user_id = ${relationship.partner_id}
+            // before deducting check if they have enough
+            const [user] = await tx`
+                SELECT tokens FROM users WHERE id = ${userId}
+            `;
+
+            if (!withinWindow && user.tokens < 4) {
+                return {
+                    status: 400,
+                    body: { error: "Not enough tokens to unlock outside your window" },
+                };
+            }
+
+            // mark the pre-made row as checked in
+            const [checkin] = await tx`
+                UPDATE checkin
+                SET has_checked_in = true, checked_in_at = NOW()
+                WHERE id = ${row.id}
+                RETURNING id, phase, cycle_date, user_local_date, has_checked_in, checked_in_at
+            `;
+
+            // unlock the latest locked incoming message
+            await tx`
+                UPDATE message
+                SET unlocked = true,
+                    spent_coins = ${withinWindow ? 0 : -4}
+                WHERE id = (
+                    SELECT id FROM message
+                    WHERE to_id = ${userId}
                     AND phase = ${phase}
-                    AND cycle_date = ${today})
-        RETURNING id 
-        `;
+                    AND unlocked = false
+                    ORDER BY sent_at DESC
+                    LIMIT 1
+                )
+            `;
 
-        res.status(201).json({
-            checkin,
-            on_time: withinWindow,
-            token_change: tokenChange,
-            streak_updated: !!partnerCheckin,
+            // add or deduct tokens based on whether they were on time
+            await tx`
+                UPDATE users
+                SET tokens = tokens + ${tokenChange}
+                WHERE id = ${userId}
+            `;
+
+            // streak goes up only if partner ALSO checked in (has_checked_in = true, not just has a row)
+            // for the same phase in the same cycle
+            const [streak] = await tx`
+                UPDATE relationship
+                SET streak_counter = streak_counter + 1
+                WHERE id = ${relationship.id}
+                AND EXISTS (
+                    SELECT 1 FROM checkin mine
+                    JOIN checkin partner
+                        ON partner.cycle_date = mine.cycle_date
+                        AND partner.phase = mine.phase
+                    WHERE mine.id = ${checkin.id}
+                    AND partner.user_id = ${relationship.partner_id}
+                    AND partner.has_checked_in = true
+                )
+                RETURNING streak_counter
+            `;
+
+            return {
+                status: 201,
+                body: {
+                    checkin,
+                    on_time: withinWindow,
+                    token_change: tokenChange,
+                    streak_updated: !!streak,
+                },
+            };
         });
+
+        res.status(result.status).json(result.body);
     } catch (error) {
         console.error("POST /checkin error:", error);
         res.status(500).json({ error: "Internal server error" });

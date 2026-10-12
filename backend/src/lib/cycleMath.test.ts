@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { DateTime } from "luxon";
-import { computeCycle, ResolvedSchedule } from "./cycleMath";
+import { computeCycle, nearestTarget, ResolvedSchedule } from "./cycleMath";
 
 /**
  * These tests are NOT invented — they are the literal paper examples
@@ -201,5 +201,34 @@ describe("Invariants that must hold regardless of inputs", () => {
         expect(findRow(a, "avery", "night").userLocalDate).toBe(
             findRow(b, "avery", "night").userLocalDate
         );
+    });
+});
+
+describe("nearestTarget — which window a checkin belongs to", () => {
+    const at = (iso: string) => DateTime.fromISO(iso, { zone: "utc" });
+
+    it("same day: 7:05am check-in for a 7am wake is 5 mins off", () => {
+        const t = nearestTarget("UTC", mins(7), at("2026-08-14T07:05:00Z"));
+        expect(t.localDate).toBe("2026-08-14");
+        expect(t.diffMinutes).toBe(5);
+    });
+
+    it("past midnight: 00:10 check-in for 23:50 sleep belongs to YESTERDAY, 20 mins off", () => {
+        const t = nearestTarget("UTC", mins(23, 50), at("2026-08-14T00:10:00Z"));
+        expect(t.localDate).toBe("2026-08-13");
+        expect(t.diffMinutes).toBe(20);
+    });
+
+    it("before midnight: 23:50 check-in for 00:10 sleep belongs to TOMORROW", () => {
+        const t = nearestTarget("UTC", mins(0, 10), at("2026-08-13T23:50:00Z"));
+        expect(t.localDate).toBe("2026-08-14");
+        expect(t.diffMinutes).toBe(20);
+    });
+
+    it("uses the user's timezone, not UTC", () => {
+        // 17:00 UTC = 10:00 in UTC-7 -> right on a 10am wake
+        const t = nearestTarget("UTC-7", mins(10), at("2026-08-14T17:00:00Z"));
+        expect(t.localDate).toBe("2026-08-14");
+        expect(t.diffMinutes).toBe(0);
     });
 });
