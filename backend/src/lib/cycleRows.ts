@@ -44,10 +44,9 @@ async function getActiveSchedule(
 
 /**
  * createCycleRows — the reusable, idempotent entry point of the streak
- * system. Called from THREE places (by design, per the Aug 8 task doc):
- *   1. the daily cron trigger route
- *   2. the relationship-just-formed flow
- *   3. the lazy fallback inside checkin.ts (Task 5.2)
+ * system. Rows are created LAZILY (no cron job):
+ *   1. checkin.ts — if the row for this window doesn't exist yet, create it
+ *   2. the relationship-just-formed flow (usually a no-op, schedules start tomorrow)
  *
  * All cycle math lives in cycleMath.computeCycle (pure, unit-tested).
  * This file only does: fetch inputs -> compute -> insert.

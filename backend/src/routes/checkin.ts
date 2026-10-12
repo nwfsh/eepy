@@ -134,6 +134,37 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
                 };
             }
 
+            // streak reset — no cron job, so we check lazily here instead
+            // on the FIRST check-in of a cycle, look at the cycle before it (cycle_date - 1)
+            // if it doesn't have all 4 check-ins (or its rows were never made cus nobody opened the app)
+            // -> streak back to 0
+            // only on the first check-in, otherwise the morning check-in would wipe the night's +1
+            // ::int because count() returns bigint, which postgres.js gives back as a string
+            const [cycleInfo] = await tx`
+                SELECT
+                    (SELECT count(*)::int FROM checkin
+                     WHERE relationship_id = ${relationship.id}
+                     AND cycle_date = c.cycle_date
+                     AND has_checked_in = true) AS done_this_cycle,
+                    (SELECT count(*)::int FROM checkin
+                     WHERE relationship_id = ${relationship.id}
+                     AND cycle_date = c.cycle_date - 1
+                     AND has_checked_in = true) AS done_last_cycle
+                FROM checkin c
+                WHERE c.id = ${row.id}
+            `;
+
+            const streakReset =
+                cycleInfo.done_this_cycle === 0 && cycleInfo.done_last_cycle < 4;
+
+            if (streakReset) {
+                await tx`
+                    UPDATE relationship
+                    SET streak_counter = 0
+                    WHERE id = ${relationship.id}
+                `;
+            }
+
             // mark the pre-made row as checked in
             const [checkin] = await tx`
                 UPDATE checkin
@@ -189,6 +220,7 @@ checkinRouter.post("/add", requireAuth, async (req: Request, res: Response) => {
                     on_time: withinWindow,
                     token_change: tokenChange,
                     streak_updated: !!streak,
+                    streak_reset: streakReset,
                 },
             };
         });
